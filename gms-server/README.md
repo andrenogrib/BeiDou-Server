@@ -1,12 +1,12 @@
-## 开发准备
-### 数据库准备
+## Development Setup
+### Database Setup
 
-如果数据库用户不是root用户，该用户需要拥有这些额外权限
+If the database user is not the `root` user, that user needs the following additional privileges:
 
-performance_schema库user_variables_by_thread表的select权限
+SELECT privilege on the `user_variables_by_thread` table in the `performance_schema` database
 
-mysql库的show view权限
+SHOW VIEW privilege on the `mysql` database
 
-### idea 配置
+### IDEA Configuration
 
-如果是直接打开的Cosmic目录运行，需要在server的编译配置里设置 Working directory 为 gms-server
+If you run the project by opening the Cosmic directory directly, you need to set the `Working directory` to `gms-server` in the server's build configuration.

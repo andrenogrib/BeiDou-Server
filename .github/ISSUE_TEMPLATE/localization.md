@@ -1,8 +1,8 @@
 ---
-name: Submit a Bug
-about: For bug reports only. For translation/localization requests, please open a separate issue.
-title: '[Bug] '
-labels: 'bug'
+name: Localization Request
+about: Report text that has not yet been translated / localized
+title: '[Localization] '
+labels: 'optimization'
 assignees: ''
 
 ---
