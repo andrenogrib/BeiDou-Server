@@ -1500,14 +1500,14 @@ public class Client extends ChannelInboundHandlerAdapter {
             enableActions();
             return;
         } else if (MiniDungeonInfo.isDungeonMap(player.getMapId())) {
-            sendPacket(PacketCreator.serverNotice(5, "在迷你地牢内时，更改频道或进入现金商店或拍卖行将被禁用。"));
+            sendPacket(PacketCreator.serverNotice(5, "While inside a mini dungeon, changing channels or entering the Cash Shop or Auction House is disabled."));
             enableActions();
             return;
         }
 
         String[] socket = Server.getInstance().getInetSocket(this, getWorld(), channel);
         if (socket == null) {
-            sendPacket(PacketCreator.serverNotice(1, "频道 " + channel + " 当前已禁用。请尝试其他频道。"));
+            sendPacket(PacketCreator.serverNotice(1, "Channel " + channel + " is currently disabled. Please try another channel."));
             enableActions();
             return;
         }

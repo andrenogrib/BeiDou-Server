@@ -93,7 +93,7 @@ public final class FamilyUseHandler extends AbstractPacketHandler {
 
         } else {
             if (c.getPlayer().isFamilyBuff()) {
-                c.getPlayer().message("你已经有BUFF");
+                c.getPlayer().message("You already have a buff.");
                 return;
             }
 

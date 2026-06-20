@@ -27,7 +27,7 @@
 var status = 0;
 
 function start() {
-    cm.sendYesNo("要去金银岛吗？只需要支付 #e150 金币#n，我会把你送到 #b明珠港#k。#r但是#k一旦离开这里，你就不能再回来了，要出发吗？");
+    cm.sendYesNo("Do you want to go to Gold Beach? For just #e150 mesos#n, I'll take you to #bLith Harbor#k. #rHowever#k, once you leave this place, you won't be able to come back. Are you ready to set off?");
 }
 
 function action(mode, type, selection) {
@@ -37,7 +37,7 @@ function action(mode, type, selection) {
             status -= 2;
         } else if (type == 1 || (mode == -1 && type != 1)) {
             if (mode == 0) {
-                cm.sendOk("好好享受这里的时光");
+                cm.sendOk("Enjoy your time here.");
             }
             cm.dispose();
             return;
@@ -45,22 +45,22 @@ function action(mode, type, selection) {
     }
     if (status == 1) {
         if (cm.haveItem(4031801)) {
-            cm.sendNext("这是路卡斯的推荐信？那你可以免费搭乘这次航班。");
+            cm.sendNext("Is this Lucas's recommendation letter? Then you can ride this flight for free.");
         } else {
-            cm.sendNext("收你 #e150 金币#n...");
+            cm.sendNext("That'll be #e150 mesos#n...");
         }
     } else if (status == 2) {
         if (cm.haveItem(4031801)) {
-            cm.sendNextPrev("事不宜迟，我们出发吧！");
+            cm.sendNextPrev("There's no time to lose. Let's get going!");
         } else if (cm.getLevel() > 6) {
             if (cm.getMeso() < 150) {
-                cm.sendOk("你的金币不足以支付这次航行");
+                cm.sendOk("You don't have enough mesos to pay for this voyage.");
                 cm.dispose();
             } else {
-                cm.sendNext("事不宜迟，我们出发吧！");
+                cm.sendNext("There's no time to lose. Let's get going!");
             }
         } else {
-            cm.sendOk("你的等级太低了，请7级后再来。");
+            cm.sendOk("Your level is too low. Please come back after you reach level 7.");
             cm.dispose();
         }
     } else if (status == 3) {

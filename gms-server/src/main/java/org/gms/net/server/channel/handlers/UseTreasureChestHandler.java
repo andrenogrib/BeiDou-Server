@@ -40,12 +40,12 @@ public final class UseTreasureChestHandler extends AbstractPacketHandler {
             case 4280000:
                 reward = GameConstants.selectRandomReward(GameConstants.goldrewards);
                 keyIDforRemoval = 5490000;
-                box = "金宝箱";
+                box = "Gold Treasure Chest";
                 break;
             case 4280001:
                 reward = GameConstants.selectRandomReward(GameConstants.goldrewards);
                 keyIDforRemoval = 5490001;
-                box = "银宝箱";
+                box = "Silver Treasure Chest";
                 break;
             default:
                 return;
@@ -72,11 +72,11 @@ public final class UseTreasureChestHandler extends AbstractPacketHandler {
                 c.sendPacket(PacketCreator.getShowItemGain(reward, (short) amount, true));
                 c.sendPacket(PacketCreator.UseTreasureBox(toUse.getItemId()));
             } else {
-                c.getPlayer().dropMessage(5, "你有一个栏位满了，请空出来再打开" + box + "！");
+                c.getPlayer().dropMessage(5, "One of your inventory tabs is full. Please make room before opening " + box + "!");
                 c.sendPacket(PacketCreator.enableActions());
             }
         } else {
-            c.getPlayer().dropMessage(5, "请确认是否有" + keyname);
+            c.getPlayer().dropMessage(5, "Please make sure you have " + keyname);
             c.sendPacket(PacketCreator.enableActions());
         }
 

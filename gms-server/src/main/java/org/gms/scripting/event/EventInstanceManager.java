@@ -1491,17 +1491,17 @@ public class EventInstanceManager {
 
         long totalDamage = sorted.stream().mapToLong(Map.Entry::getValue).sum();
 
-        dropMessage(6, "========== 伤害统计 ==========");
-        dropMessage(6, "总伤害: " + totalDamage);
+        dropMessage(6, "========== Damage Stats ==========");
+        dropMessage(6, "Total Damage: " + totalDamage);
         int rank = 1;
         for (Map.Entry<Integer, Long> entry : sorted) {
             if (rank > 5) break;
             int cid = entry.getKey();
             String name = playerNames.get(cid);
             if (name == null) {
-                name = "未知玩家";   // fallback，理论上不会发生
+                name = "Unknown Player";   // fallback，理论上不会发生
             }
-            dropMessage(6, rank + "名: " + name + " - " + entry.getValue() + " 伤害");
+            dropMessage(6, rank + ". " + name + " - " + entry.getValue() + " damage");
             rank++;
         }
         dropMessage(6, "==============================");

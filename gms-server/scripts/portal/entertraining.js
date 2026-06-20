@@ -12,7 +12,7 @@ function enter(pi) {
         pi.playPortalSound();
         pi.warp(1010400, 4);
     } else {
-        pi.message("只有接受了麦加训练的人才可以进入训练场");
+        pi.message("Only those who have accepted Mecca's training may enter the training ground.");
         return false;
     }
     return true;

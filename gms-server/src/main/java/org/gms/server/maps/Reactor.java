@@ -394,7 +394,7 @@ public class Reactor extends AbstractMapObject {
 
                     Character player = c.getPlayer();
                     if (GameConfig.getServerBoolean("use_debug") && player.isGM()) {
-                        player.dropMessage(5, "击中反应器 " + this.getId() + " 位置 " + charPos + " , 姿态 " + stance + " , 技能ID " + skillid + " , 状态 " + state + " 状态大小 " + stats.getStateSize(state));  // GM调试信息
+                        player.dropMessage(5, "Hit reactor " + this.getId() + " pos " + charPos + " , stance " + stance + " , skillId " + skillid + " , state " + state + " stateSize " + stats.getStateSize(state));  // GM调试信息
                     }
                     ReactorScriptManager.getInstance().onHit(c, this);  // 调用击中脚本
 

@@ -79,7 +79,7 @@ public final class UseMountFoodHandler extends AbstractPacketHandler {
                                 }
                             //如果满级
                             } else if (level == maxMountLevel) {
-                                chr.dropMessage(5, "坐骑已达到最高等级");
+                                chr.dropMessage(5, "Your mount has reached the maximum level.");
                             }
 
                             mountLevelup = levelup;

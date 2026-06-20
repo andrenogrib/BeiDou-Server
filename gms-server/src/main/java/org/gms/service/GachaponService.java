@@ -203,7 +203,7 @@ public class GachaponService {
         try {
             List<GachaponRewardPoolDO> pools = getActivePools(gachaponId); // 已按ID排序
             if (pools.isEmpty()) {
-                player.message("百宝箱为空，请联系管理员，百宝箱id: " + gachaponId);
+                player.message("Treasure Chest is empty, please contact an administrator, Treasure Chest id: " + gachaponId);
                 log.error("百宝箱奖池为空，百宝箱id:{} 抽奖人:[{}] {}", gachaponId, player.getId(), player.getName());
                 return;
             }
@@ -252,7 +252,7 @@ public class GachaponService {
     private void doReward(Character player, GachaponRewardPoolDO pool) {
         List<GachaponRewardDO> poolRewards = getPoolRewards(pool.getId());
         if (poolRewards.isEmpty()) {
-            player.message("奖池为空，请联系管理员");
+            player.message("Reward pool is empty, please contact an administrator");
             log.error("百宝箱奖池为空，奖池id:{} 抽奖人:[{}] {}", pool.getId(), player.getId(), player.getName());
             return;
         }

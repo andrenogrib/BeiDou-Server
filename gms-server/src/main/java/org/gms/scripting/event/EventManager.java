@@ -1077,9 +1077,10 @@ public class EventManager {
      */
     private void exportReadyGuild(Integer guildId) {
         Guild mg = server.getGuild(guildId);
-        String callout = "[公会任务] 您的公会已成功报名参加频道 " + this.getChannelServer().getId() + " 的" +
-                "【家族对抗赛】，当前已进入战略准备阶段。3分钟后将禁止新成员加入任务。" +
-                " 请前往勇士之都挖掘现场寻找NPC双了解更多详情。";
+        String callout = "[Guild Quest] Your guild has successfully signed up for the " +
+                "[Guild Clash] on Channel " + this.getChannelServer().getId() + ", and is now in the strategic preparation phase. " +
+                "New members will be barred from joining the quest in 3 minutes." +
+                " Please head to the excavation site in Perion and look for NPC Shuang to learn more.";
 
         mg.dropMessage(6, callout);
     }
@@ -1091,8 +1092,9 @@ public class EventManager {
      */
     private void exportMovedQueueToGuild(Integer guildId, int place) {
         Guild mg = server.getGuild(guildId);
-        String callout = "[公会任务] 您的公会已成功报名参加频道 " + this.getChannelServer().getId() + " 的" +
-                "【家族对抗赛】，当前在等待队列中排名第 " + GameConstants.ordinal(place) + " 位。";
+        String callout = "[Guild Quest] Your guild has successfully signed up for the " +
+                "[Guild Clash] on Channel " + this.getChannelServer().getId() + ", and is currently ranked " +
+                GameConstants.ordinal(place) + " in the waiting queue.";
 
         mg.dropMessage(6, callout);
     }

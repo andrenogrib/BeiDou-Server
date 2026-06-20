@@ -54,19 +54,19 @@ public final class MobDamageMobFriendlyHandler extends AbstractPacketHandler {
         if (monster.getHp() - damage < 1) {     // friendly dies
             switch (monster.getId()) {
                 case MobId.WATCH_HOG ->
-                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " 被外星人殴打致重伤，已被兽医紧急拉走抢救。"));    //护卫用小浣猪
+                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " was badly beaten by the aliens and rushed away by the vet for emergency care."));    //护卫用小浣猪
                 case MobId.MOON_BUNNY -> //moon bunny
-                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " 因为重伤被抬回去休养了。")); //月妙
+                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " was carried back to recover from serious injuries.")); //月妙
                 case MobId.TYLUS -> //tylus
-                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " 在伏击部队的强大攻势下倒下了。"));  //冒牌泰勒斯
+                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " fell under the ambush squad's fierce assault."));  //冒牌泰勒斯
                 case MobId.JULIET -> //juliet
-                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " 在战斗中晕倒了。")); //朱丽叶
+                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " fainted during the battle.")); //朱丽叶
                 case MobId.ROMEO -> //romeo
-                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " 在战斗中晕倒了。")); //罗密欧
+                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " fainted during the battle.")); //罗密欧
                 case MobId.GIANT_SNOWMAN_LV1_EASY, MobId.GIANT_SNOWMAN_LV1_MEDIUM, MobId.GIANT_SNOWMAN_LV1_HARD ->
-                        map.broadcastMessage(PacketCreator.serverNotice(5, "雪人在战斗的热浪中融化了。"));
+                        map.broadcastMessage(PacketCreator.serverNotice(5, "The snowman melted in the heat of battle."));
                 case MobId.DELLI -> //delli
-                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " 在伏击后消失了，只留下地上的被单..."));  //德里
+                        map.broadcastMessage(PacketCreator.serverNotice(5, mopName + " vanished after the ambush, leaving only a bedsheet on the ground..."));  //德里
             }
             
             map.killFriendlies(monster);

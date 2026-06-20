@@ -19,21 +19,21 @@ function action(mode, type, selection) {
     }
     if (status === 0) {
         if (cm.getLevel() >= 20) {
-            cm.sendOk("#r只有低于20级才能进入训练中心。");
+            cm.sendOk("#rOnly characters below level 20 can enter the Training Center.");
             cm.dispose();
             return;
         }
 
-        let selStr = "你要进入训练中心吗？";
+        let selStr = "Do you want to enter the Training Center?";
         for (let i = 0; i < num; i++) {
-            selStr += "\r\n#b#L" + i + "#训练中心 " + i + " (" + cm.getPlayerCount(map + i) + "/" + maxp + ")#l#k";
+            selStr += "\r\n#b#L" + i + "#Training Center " + i + " (" + cm.getPlayerCount(map + i) + "/" + maxp + ")#l#k";
         }
         cm.sendSimple(selStr);
     } else if (status === 1) {
         if (selection < 0 || selection >= num) {
             cm.dispose();
         } else if (cm.getPlayerCount(map + selection) >= maxp) {
-            cm.sendNext("#r里面满人了，换个训练中心或频道试试。");
+            cm.sendNext("#rIt's full inside. Try a different Training Center or channel.");
             status = -1;
         } else {
             cm.warp(map + selection, 0);

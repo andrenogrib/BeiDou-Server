@@ -28,9 +28,9 @@
 
 var status;
 var map = 102000003;
-var job = "战士";
+var job = "Warrior";
 var jobType = 1;
-var no = "如果你想成为#b" + job + "#k，记得回来找我。";
+var no = "If you want to become a #b" + job + "#k, remember to come back and find me.";
 
 function start() {
     status = -1;
@@ -56,13 +56,13 @@ function action(mode, type, selection) {
         if (status == 0) {
             if (cm.getJob().getId() == 0) {
                 if (cm.getLevel() >= 10 && cm.canGetFirstJob(jobType)) {
-                    cm.sendYesNo("你好 #h #，我可以把你送到#b#m" + map + "##k进行#b" + job + "#k转职。你要过去吗？");
+                    cm.sendYesNo("Hello #h #, I can send you to #b#m" + map + "##k to make the #b" + job + "#k job advancement. Do you want to go there?");
                 } else {
-                    cm.sendOk("如果你想成为#b" + job + "#k，你需要到达#b10级，" + cm.getFirstJobStatRequirement(jobType) + "#k。");
+                    cm.sendOk("If you want to become a #b" + job + "#k, you need to reach #blevel 10, " + cm.getFirstJobStatRequirement(jobType) + "#k.");
                     cm.dispose();
                 }
             } else {
-                cm.sendOk("我只招待新人！");
+                cm.sendOk("I only attend to beginners!");
                 cm.dispose();
             }
         } else if (status == 1) {

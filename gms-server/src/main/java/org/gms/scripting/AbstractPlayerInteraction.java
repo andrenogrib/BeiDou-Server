@@ -649,7 +649,7 @@ public class AbstractPlayerInteraction {
             }
 
             if (!InventoryManipulator.checkSpace(c, id, quantity, "")) {
-                c.getPlayer().dropMessage(1, "您的背包已满，请从" + ItemConstants.getInventoryType(id).name() + "栏移除一件物品。");
+                c.getPlayer().dropMessage(1, "Your inventory is full. Please remove an item from the " + ItemConstants.getInventoryType(id).name() + " tab.");
                 return null;
             }
             if (ItemConstants.getInventoryType(id) == InventoryType.EQUIP) {
@@ -1200,17 +1200,17 @@ public class AbstractPlayerInteraction {
     public String getFirstJobStatRequirement(int jobType) {
         switch (jobType) {
             case 1:
-                return "力量 " + 35;
+                return "STR " + 35;
 
             case 2:
-                return "智力 " + 20;
+                return "INT " + 20;
 
             case 3:
             case 4:
-                return "敏捷 " + 25;
+                return "DEX " + 25;
 
             case 5:
-                return "敏捷 " + 20;
+                return "DEX " + 20;
         }
 
         return null;

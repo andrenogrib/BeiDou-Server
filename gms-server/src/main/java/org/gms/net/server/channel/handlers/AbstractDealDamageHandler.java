@@ -536,7 +536,7 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
                                             api.gainItem(shellId, (short) -1, false);
                                             totDamageToOneMonster *= player.getLevel();
                                         } else {
-                                            player.dropMessage(5, "你的蜗牛壳已经用完了，无法使用蜗牛投掷术。");  //蜗牛壳消耗完了
+                                            player.dropMessage(5, "You are out of snail shells and cannot use Snail Throw.");  //蜗牛壳消耗完了
                                             totDamageToOneMonster = 0;
                                         }
                                     } else {
@@ -1337,11 +1337,11 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
             long interval = chr.updateLastAttackTimeAndGetInterval(skill, System.currentTimeMillis());
             if (interval < 250) {
                 // 检测攻击间隔 小于350mm封号
-                AutobanFactory.ATTACK_INTERVAL.addPoint(chr.getAutoBanManager(), "玩家" + chr.getName() + "地图ID：" + chr.getMapId() + "攻击间隔: " + interval + "技能ID：" + skill);
+                AutobanFactory.ATTACK_INTERVAL.addPoint(chr.getAutoBanManager(), "Player " + chr.getName() + " mapId: " + chr.getMapId() + " attackInterval: " + interval + " skillId: " + skill);
                 log.warn("玩家{}地图ID：{}攻击间隔: {}技能ID：{}", chr.getName(), chr.getMapId(), interval, skill);
             } else if (interval < 350) {
                 // 检测攻击间隔 小于500mm警告
-                AutobanFactory.ATTACK_INTERVAL.alert(chr, "玩家" + chr.getName() + "地图ID：" + chr.getMapId() + "攻击间隔: " + interval + "技能ID：" + skill);
+                AutobanFactory.ATTACK_INTERVAL.alert(chr, "Player " + chr.getName() + " mapId: " + chr.getMapId() + " attackInterval: " + interval + " skillId: " + skill);
                 log.warn("玩家{}地图ID：{}攻击间隔: {}技能ID：{}", chr.getName(), chr.getMapId(), interval, skill);
             }
         }

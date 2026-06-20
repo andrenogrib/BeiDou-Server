@@ -70,7 +70,7 @@ public class PortalScriptManager extends AbstractScriptManager {
             String strPortalName = portal.getScriptName();
             if (GameConfig.getServerBoolean("use_debug") && c.getPlayer().isGM() )
             {
-                c.getPlayer().dropMessage("您已建立与传送门脚本: " + strPortalName + ".js 的关联。");
+                c.getPlayer().dropMessage("You have linked the portal script: " + strPortalName + ".js.");
             }
             PortalScript script = getPortalScript(strPortalName);
             if (script != null) {

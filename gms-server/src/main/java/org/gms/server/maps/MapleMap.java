@@ -1361,22 +1361,22 @@ public class MapleMap {
 
     // 巴洛古(Balrog)讨伐胜利广播
     public void broadcastBalrogVictory(String leaderName) {
-        getWorldServer().dropMessage(6,"[远征凯旋] " + leaderName + "的远征队成功讨伐了火焰魔神巴洛古！" + "让我们歌颂这支队伍，他们以" + countAlivePlayers() + "名幸存者的战绩完成了壮举！");
+        getWorldServer().dropMessage(6,"[Expedition Triumph] " + leaderName + "'s expedition successfully defeated the Balrog! " + "Let us celebrate this party, who, with " + countAlivePlayers() + " survivors, accomplished this feat!");
     }
 
     // 暗黑龙王(Horntail)讨伐胜利广播
     public void broadcastHorntailVictory() {
-        getWorldServer().dropMessage(6,"[远征凯旋] 致历经无数次挑战最终征服暗黑龙王的勇士们：" + "谨以此礼赞献给真正的神木村英雄！");
+        getWorldServer().dropMessage(6,"[Expedition Triumph] To the warriors who conquered Horntail after countless challenges: " + "this tribute is dedicated to the true heroes of Leafre!");
     }
 
     // 扎昆(Zakum)讨伐胜利广播
     public void broadcastZakumVictory() {
-        getWorldServer().dropMessage(6,"[远征凯旋] 长久笼罩天空之城的邪恶之树终于倾倒！" +"致那些历经无数次尝试最终征服扎昆的远征队，胜利属于你们！" +"你们是天空之城真正的传说！");
+        getWorldServer().dropMessage(6,"[Expedition Triumph] The evil tree that long shrouded the sky has finally fallen! " +"To the expedition that conquered Zakum after countless attempts - victory is yours! " +"You are the true legends of the sky!");
     }
 
     // 品克缤(PinkBean)讨伐胜利广播
     public void broadcastPinkBeanVictory(int channel) {
-        getWorldServer().dropMessage(6,"[远征凯旋] 在" + channel + "频道挑战品克缤的远征队，" +  "以雷霆之势完成了终极讨伐！时间神殿重现璀璨光辉，" + "当英雄们从战场凯旋之时，被夺走的白昼终于归来！"
+        getWorldServer().dropMessage(6,"[Expedition Triumph] On " + channel + " channel, the expedition that challenged Pink Bean " +  "completed the ultimate raid with thunderous force! The Temple of Time shines brilliantly once more, " + "and as the heroes return triumphant, the stolen daylight has finally come back!"
         );
     }
 
@@ -1420,7 +1420,7 @@ public class MapleMap {
             if (removeKilledMonsterObject(monster)) {
                 try {
                     if (monster.getStats().getLevel() >= chr.getLevel() + 30 && !chr.isGM()) {
-                        AutobanFactory.GENERAL.alert(chr, "因击杀超过自身30级的怪物[" + monster.getName() + "]被系统警告");
+                        AutobanFactory.GENERAL.alert(chr, "Warned by the system for killing a monster [" + monster.getName() + "] more than 30 levels above your own");
                     }
 
                     /*if (chr.getQuest(Quest.getInstance(29400)).getStatus().equals(QuestStatus.Status.STARTED)) {
@@ -2882,7 +2882,7 @@ public class MapleMap {
                 String mobName = MonsterInformationProvider.getInstance().getMobNameFromId(monster.getId());
                 if (mobName != null) {
                     mobName = mobName.trim();
-                    this.dropMessage(5, "这片草坪已被" + mobName + "的部队占领，击败他们才能夺回控制权！");
+                    this.dropMessage(5, "This field has been occupied by " + mobName + "'s troops. Defeat them to take back control!");
                 }
             }
         }
@@ -3234,14 +3234,14 @@ public class MapleMap {
     public void reportMonsterSpawnPoints(Character chr) {
         // 输出地图刷怪点统计信息头
         chr.dropMessage(6, "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        chr.dropMessage(6, "┃ 地图ID: " + getId() + " | 总刷怪点: " + monsterSpawn.size() +  " | 已刷怪: " + spawnedMonstersOnMap.get());
+        chr.dropMessage(6, "┃ Map ID: " + getId() + " | Total spawn points: " + monsterSpawn.size() +  " | Spawned: " + spawnedMonstersOnMap.get());
         chr.dropMessage(6, "┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         // 遍历所有刷怪点输出详细信息
         for (SpawnPoint sp : getAllMonsterSpawn()) {
             chr.dropMessage(6,
-                    "┃ ID:" + sp.getMonsterId() + " | 可刷怪:" + (sp.getDenySpawn() ? "×" : "√") + " | 现存:" + sp.getSpawned() + "\n" +
-                    "┃ 坐标:(" +(int) sp.getPosition().getX() + " , " + (int) sp.getPosition().getY() + ") | 刷新:" + sp.getMobTime() + "ms | 阵营:" + sp.getTeam()
+                    "┃ ID:" + sp.getMonsterId() + " | Can spawn:" + (sp.getDenySpawn() ? "×" : "√") + " | Alive:" + sp.getSpawned() + "\n" +
+                    "┃ Coords:(" +(int) sp.getPosition().getX() + " , " + (int) sp.getPosition().getY() + ") | Respawn:" + sp.getMobTime() + "ms | Team:" + sp.getTeam()
             );
         }
         chr.dropMessage(6, "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -4055,19 +4055,19 @@ public class MapleMap {
 
     public String getEventNPC() {
         StringBuilder sb = new StringBuilder();
-        sb.append("请与 "+ mapName + " 的 ");
+        sb.append("Please talk to ");
         if (mapid == MapId.SOUTHPERRY) {
-            sb.append("珀尔");
+            sb.append("Pearl");
         } else if (mapid == MapId.LITH_HARBOUR) {
-            sb.append("江");
+            sb.append("Jiang");
         } else if (mapid == MapId.ORBIS) {
-            sb.append("马丁");
+            sb.append("Martin");
         } else if (mapid == MapId.LUDIBRIUM) {
-            sb.append("托尼");
+            sb.append("Tony");
         } else {
             return null;
         }
-        sb.append(" 进行对话。");
+        sb.append(" in "+ mapName + ".");
         return sb.toString();
     }
 
@@ -4275,7 +4275,7 @@ public class MapleMap {
         long timeNow = Server.getInstance().getCurrentTime();
         if (timeNow - mapOwnerLastActivityTime > 60000) {
             if (unclaimOwnership() != null) {
-                this.dropMessage(5, "这里现在是无主之地了。");
+                this.dropMessage(5, "This area is now unclaimed.");
             }
         }
     }
