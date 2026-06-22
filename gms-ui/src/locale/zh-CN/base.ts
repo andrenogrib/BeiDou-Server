@@ -17,4 +17,30 @@ export default {
   'button.upload': '上传',
   'button.download': '下载',
   'button.save': '保存',
+
+  'tabBar.reload': '重新加载',
+  'tabBar.closeCurrent': '关闭当前标签页',
+  'tabBar.closeLeft': '关闭左侧标签页',
+  'tabBar.closeRight': '关闭右侧标签页',
+  'tabBar.closeOthers': '关闭其它标签页',
+  'tabBar.closeAll': '关闭全部标签页',
+
+  'globalSetting.close': '关闭',
+  'globalSetting.copyConfig': '复制配置',
+  'globalSetting.pageConfig': '页面配置',
+  'globalSetting.contentArea': '内容区域',
+  'globalSetting.otherSettings': '其他设置',
+  'globalSetting.alert':
+    '配置之后仅是临时生效，要想真正作用于项目，点击下方的 "复制配置" 按钮，将配置替换到 settings.json 中即可。',
+  'globalSetting.copySuccess': '复制成功，请粘贴到 src/settings.json 文件中',
+
+  'messageBox.emptyContent': '暂无内容',
+  'messageBox.clear': '清空',
+  'messageBox.tab.message': '消息',
+  'messageBox.tab.notice': '通知',
+  'messageBox.tab.todo': '待办',
+  'messageBox.status.notStarted': '未开始',
+  'messageBox.status.opened': '已开通',
+  'messageBox.status.inProgress': '进行中',
+  'messageBox.status.expiringSoon': '即将到期',
 };

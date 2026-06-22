@@ -17,4 +17,31 @@ export default {
   'button.upload': 'Upload',
   'button.download': 'Download',
   'button.save': 'Save',
+
+  'tabBar.reload': 'Reload',
+  'tabBar.closeCurrent': 'Close current tab',
+  'tabBar.closeLeft': 'Close tabs to the left',
+  'tabBar.closeRight': 'Close tabs to the right',
+  'tabBar.closeOthers': 'Close other tabs',
+  'tabBar.closeAll': 'Close all tabs',
+
+  'globalSetting.close': 'Close',
+  'globalSetting.copyConfig': 'Copy config',
+  'globalSetting.pageConfig': 'Page configuration',
+  'globalSetting.contentArea': 'Content area',
+  'globalSetting.otherSettings': 'Other settings',
+  'globalSetting.alert':
+    'The configuration takes effect only temporarily. To truly apply it to the project, click the "Copy config" button below and replace the configuration in settings.json.',
+  'globalSetting.copySuccess':
+    'Copied successfully, please paste into the src/settings.json file',
+
+  'messageBox.emptyContent': 'No content',
+  'messageBox.clear': 'Clear',
+  'messageBox.tab.message': 'Messages',
+  'messageBox.tab.notice': 'Notices',
+  'messageBox.tab.todo': 'To-do',
+  'messageBox.status.notStarted': 'Not started',
+  'messageBox.status.opened': 'Opened',
+  'messageBox.status.inProgress': 'In progress',
+  'messageBox.status.expiringSoon': 'Expiring soon',
 };

@@ -5,100 +5,114 @@
     :on-before-ok="handleBeforeOk"
     @cancel="handleCancel"
   >
-    <template #title> 编辑商品 </template>
+    <template #title> {{ $t('cashShop.form.title.edit') }} </template>
     <div>
       <a-form :model="formData">
         <a-form-item label="sn">
           {{ formData.sn }}
         </a-form-item>
-        <a-form-item label="物品">
+        <a-form-item :label="$t('cashShop.form.label.item')">
           <a-space>
             {{ formData.itemId }}
             <img :src="getIconUrl('item', formData.itemId)" alt="" />
           </a-space>
         </a-form-item>
-        <a-form-item label="数量">
+        <a-form-item :label="$t('cashShop.form.label.count')">
           <a-input-number v-model="formData.count" />
           <template v-if="tempData.defaultCount" #extra>
-            wz默认值 {{ tempData.defaultCount }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultCount }}
           </template>
         </a-form-item>
-        <a-form-item label="价格">
+        <a-form-item :label="$t('cashShop.form.label.price')">
           <a-input-number v-model="formData.price" />
           <template v-if="tempData.defaultPrice" #extra>
-            wz默认值 {{ tempData.defaultPrice }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultPrice }}
           </template>
         </a-form-item>
-        <a-form-item label="优先级">
+        <a-form-item :label="$t('cashShop.form.label.priority')">
           <a-input-number v-model="formData.priority" />
           <template v-if="tempData.defaultPriority" #extra>
-            wz默认值 {{ tempData.defaultPriority }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultPriority }}
           </template>
         </a-form-item>
-        <a-form-item label="有效期">
+        <a-form-item :label="$t('cashShop.form.label.period')">
           <a-input-number v-model="formData.period" />
           <template v-if="tempData.defaultPeriod" #extra>
-            wz默认值 {{ tempData.defaultPeriod }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultPeriod }}
           </template>
         </a-form-item>
-        <a-form-item label="状态">
+        <a-form-item :label="$t('cashShop.form.label.status')">
           <a-switch
             v-model="formData.onSale"
             type="round"
             :checked-value="1"
             :unchecked-value="0"
           >
-            <template #checked> 上架中 </template>
-            <template #unchecked> 待售 </template>
+            <template #checked> {{ $t('cashShop.form.onSale') }} </template>
+            <template #unchecked>
+              {{ $t('cashShop.form.pendingSale') }}
+            </template>
           </a-switch>
           <template #extra>
-            wz默认值 {{ tempData.defaultOnSale ? '上架中' : '待售' }}
+            {{ $t('cashShop.form.wzDefault') }}
+            {{
+              tempData.defaultOnSale
+                ? $t('cashShop.form.onSale')
+                : $t('cashShop.form.pendingSale')
+            }}
           </template>
         </a-form-item>
         <a-form-item label="Bonus">
           <a-input-number v-model="formData.bonus" />
           <template v-if="tempData.defaultBonus" #extra>
-            wz默认值 {{ tempData.defaultBonus }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultBonus }}
           </template>
         </a-form-item>
-        <a-form-item label="抵用券">
+        <a-form-item :label="$t('cashShop.form.label.maplePoint')">
           <a-input-number v-model="formData.maplePoint" />
           <template v-if="tempData.defaultMaplePoint" #extra>
-            wz默认值 {{ tempData.defaultMaplePoint }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultMaplePoint }}
           </template>
         </a-form-item>
-        <a-form-item label="金币">
+        <a-form-item :label="$t('cashShop.form.label.meso')">
           <a-input-number v-model="formData.meso" />
           <template v-if="tempData.defaultMeso" #extra>
-            wz默认值 {{ tempData.defaultMeso }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultMeso }}
           </template>
         </a-form-item>
         <a-form-item label="PremiumUser">
           <a-input-number v-model="formData.forPremiumUser" />
           <template v-if="tempData.defaultForPremiumUser" #extra>
-            wz默认值 {{ tempData.defaultForPremiumUser }}
+            {{ $t('cashShop.form.wzDefault') }}
+            {{ tempData.defaultForPremiumUser }}
           </template>
         </a-form-item>
-        <a-form-item label="性别">
+        <a-form-item :label="$t('cashShop.form.label.gender')">
           <a-select v-model="formData.commodityGender">
-            <a-option :value="0">男</a-option>
-            <a-option :value="1">女</a-option>
-            <a-option :value="2">通用</a-option>
+            <a-option :value="0">{{
+              $t('cashShop.form.gender.male')
+            }}</a-option>
+            <a-option :value="1">{{
+              $t('cashShop.form.gender.female')
+            }}</a-option>
+            <a-option :value="2">{{
+              $t('cashShop.form.gender.unisex')
+            }}</a-option>
           </a-select>
           <template #extra>
-            wz默认值
+            {{ $t('cashShop.form.wzDefault') }}
             {{
               tempData.defaultGender === 0
-                ? '男'
+                ? $t('cashShop.form.gender.male')
                 : tempData.defaultGender === 1
-                ? '女'
+                ? $t('cashShop.form.gender.female')
                 : tempData.defaultGender === 2
-                ? '通用'
+                ? $t('cashShop.form.gender.unisex')
                 : ''
             }}
           </template>
         </a-form-item>
-        <a-form-item label="标签">
+        <a-form-item :label="$t('cashShop.form.label.tag')">
           <a-select v-model="formData.clz" allow-clear>
             <a-option :value="0">NEW</a-option>
             <a-option :value="1">SALE</a-option>
@@ -106,7 +120,7 @@
             <a-option :value="3">EVENT</a-option>
           </a-select>
           <template v-if="tempData.defaultClz" #extra>
-            wz默认值
+            {{ $t('cashShop.form.wzDefault') }}
             {{
               tempData.defaultClz === 0
                 ? 'NEW'
@@ -123,31 +137,31 @@
         <a-form-item label="Limit">
           <a-input-number v-model="formData.limit" />
           <template v-if="tempData.defaultLimit" #extra>
-            wz默认值 {{ tempData.defaultLimit }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultLimit }}
           </template>
         </a-form-item>
         <a-form-item label="pbCash">
           <a-input-number v-model="formData.pbCash" />
           <template v-if="tempData.defaultPBCash" #extra>
-            wz默认值 {{ tempData.defaultPBCash }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultPBCash }}
           </template>
         </a-form-item>
         <a-form-item label="pbPoint">
           <a-input-number v-model="formData.pbPoint" />
           <template v-if="tempData.defaultPBPoint" #extra>
-            wz默认值 {{ tempData.defaultPBPoint }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultPBPoint }}
           </template>
         </a-form-item>
         <a-form-item label="pbGift">
           <a-input-number v-model="formData.pbGift" />
           <template v-if="tempData.defaultPBGift" #extra>
-            wz默认值 {{ tempData.defaultPBGift }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultPBGift }}
           </template>
         </a-form-item>
         <a-form-item label="packageSn">
           <a-input-number v-model="formData.packageSn" />
           <template v-if="tempData.defaultPackageSn" #extra>
-            wz默认值 {{ tempData.defaultPackageSn }}
+            {{ $t('cashShop.form.wzDefault') }} {{ tempData.defaultPackageSn }}
           </template>
         </a-form-item>
       </a-form>
@@ -162,7 +176,9 @@
   import useLoading from '@/hooks/loading';
   import { Message } from '@arco-design/web-vue';
   import { getIconUrl } from '@/utils/mapleStoryAPI';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const { setLoading, loading } = useLoading(false);
   const visible = ref<boolean>(false);
   const formData = ref<cashShopFormState>({ sn: -1, itemId: -1 });
@@ -175,7 +191,7 @@
       if (formData.value.onSale) await onSale(formData.value);
       else await offSale(formData.value);
       visible.value = false;
-      Message.success('更新成功！');
+      Message.success(t('cashShop.form.updateSuccess'));
       emit('loadData');
     } finally {
       setLoading(false);

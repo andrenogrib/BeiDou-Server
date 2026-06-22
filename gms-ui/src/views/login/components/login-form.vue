@@ -135,7 +135,7 @@
       } catch (err) {
         errorMessage.value = (err as Error).message;
         if ((err as Error).name === 'TypeError')
-          errorMessage.value = '错误的请求';
+          errorMessage.value = t('form.login.badRequest');
       } finally {
         setLoading(false);
       }

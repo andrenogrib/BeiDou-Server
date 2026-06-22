@@ -8,7 +8,7 @@
           status="success"
           @click="changeOnSaleFilter(1)"
         >
-          上架中
+          {{ $t('cashShop.table.filter.onSale') }}
         </a-button>
         <a-button
           :disabled="condition.onSale === 0"
@@ -16,26 +16,28 @@
           status="danger"
           @click="changeOnSaleFilter(0)"
         >
-          待售
+          {{ $t('cashShop.table.filter.pendingSale') }}
         </a-button>
         <a-button
           :disabled="condition.onSale === undefined"
           type="primary"
           @click="changeOnSaleFilter(undefined)"
         >
-          全部
+          {{ $t('cashShop.table.filter.all') }}
         </a-button>
       </a-space>
       <a-space class="a-input">
         <a-input-number
           v-model="condition.itemId"
-          placeholder="物品ID"
+          :placeholder="$t('cashShop.table.placeholder.itemId')"
           @keydown.enter="loadData"
         />
       </a-space>
       <a-space>
-        <a-button @click="loadData">搜索</a-button>
-        <a-button type="primary" @click="showBatchForm">批量编辑</a-button>
+        <a-button @click="loadData">{{ $t('button.search') }}</a-button>
+        <a-button type="primary" @click="showBatchForm">
+          {{ $t('cashShop.table.batchEdit') }}
+        </a-button>
       </a-space>
     </a-space>
     <a-table
@@ -56,7 +58,11 @@
           align="center"
           :width="100"
         />
-        <a-table-column title="物品图标" align="center" :width="70">
+        <a-table-column
+          :title="$t('cashShop.table.column.itemIcon')"
+          align="center"
+          :width="70"
+        >
           <template #cell="{ record }">
             <img
               :src="getIconUrl('item', record.itemId)"
@@ -65,75 +71,95 @@
           </template>
         </a-table-column>
         <a-table-column
-          title="物品ID"
+          :title="$t('cashShop.table.column.itemId')"
           data-index="itemId"
           align="center"
           :width="100"
         />
         <a-table-column
-          title="物品名称"
+          :title="$t('cashShop.table.column.itemName')"
           data-index="itemName"
           align="center"
           :width="140"
         />
         <a-table-column
-          title="数量"
+          :title="$t('cashShop.table.column.count')"
           data-index="count"
           align="center"
           :width="70"
         />
         <a-table-column
-          title="优先级"
+          :title="$t('cashShop.table.column.priority')"
           data-index="priority"
           align="center"
           :width="80"
         />
         <a-table-column
-          title="售价"
+          :title="$t('cashShop.table.column.price')"
           data-index="price"
           align="center"
           :width="80"
         />
         <a-table-column title="Bonus" data-index="bonus" align="center" />
         <a-table-column
-          title="有效期"
+          :title="$t('cashShop.table.column.period')"
           data-index="period"
           align="center"
           :width="80"
         >
-          <template #cell="{ record }"> {{ record.period }} 天 </template>
+          <template #cell="{ record }">
+            {{ record.period }} {{ $t('cashShop.table.period.days') }}
+          </template>
         </a-table-column>
-        <a-table-column title="抵用券" data-index="maplePoint" align="center" />
-        <a-table-column title="金币" data-index="meso" align="center" />
         <a-table-column
-          title="会员专属"
+          :title="$t('cashShop.table.column.maplePoint')"
+          data-index="maplePoint"
+          align="center"
+        />
+        <a-table-column
+          :title="$t('cashShop.table.column.meso')"
+          data-index="meso"
+          align="center"
+        />
+        <a-table-column
+          :title="$t('cashShop.table.column.forPremiumUser')"
           data-index="forPremiumUser"
           align="center"
         />
         <a-table-column
-          title="性别"
+          :title="$t('cashShop.table.column.gender')"
           data-index="gender"
           align="center"
           :width="80"
         >
           <template #cell="{ record }">
-            <a-tag v-if="record.gender === 0" color="blue"> 男 </a-tag>
-            <a-tag v-else-if="record.gender === 1" color="red"> 女 </a-tag>
-            <a-tag v-else-if="record.gender === 2" color="green"> 通用 </a-tag>
+            <a-tag v-if="record.gender === 0" color="blue">
+              {{ $t('cashShop.table.gender.male') }}
+            </a-tag>
+            <a-tag v-else-if="record.gender === 1" color="red">
+              {{ $t('cashShop.table.gender.female') }}
+            </a-tag>
+            <a-tag v-else-if="record.gender === 2" color="green">
+              {{ $t('cashShop.table.gender.unisex') }}
+            </a-tag>
           </template>
         </a-table-column>
         <a-table-column
-          title="上架"
+          :title="$t('cashShop.table.column.onSale')"
           data-index="onSale"
           align="center"
           :width="90"
         >
           <template #cell="{ record }">
-            <a-tag v-if="record.onSale" color="green">上架中</a-tag>
-            <a-tag v-else color="red">待售</a-tag>
+            <a-tag v-if="record.onSale" color="green">
+              {{ $t('cashShop.table.onSale') }}
+            </a-tag>
+            <a-tag v-else color="red">
+              {{ $t('cashShop.table.pendingSale') }}
+            </a-tag>
           </template>
         </a-table-column>
-        <a-table-column title="标签" align="center">
+        <a-table-column :title="$t('cashShop.table.column.tag')" align="center">
           <template #cell="{ record }">
             <a-tag v-if="record.clz === 0" color="gold">NEW</a-tag>
             <a-tag v-else-if="record.clz === 1" color="green">SALE</a-tag>
@@ -146,14 +172,14 @@
         <a-table-column title="PbPoint" data-index="pbPoint" align="center" />
         <a-table-column title="PbGift" data-index="pbGift" align="center" />
         <a-table-column
-          title="礼包合集"
+          :title="$t('cashShop.table.column.packageSn')"
           data-index="packageSn"
           align="center"
         />
-        <a-table-column title="操作">
+        <a-table-column :title="$t('operation')">
           <template #cell="{ record }">
             <a-button type="text" size="mini" @click="editClick(record)">
-              编辑
+              {{ $t('button.edit') }}
             </a-button>
           </template>
         </a-table-column>
@@ -172,28 +198,28 @@
   <a-modal
     v-model:visible="batchFormVisible"
     :ok-loading="loading"
-    title="批量编辑"
+    :title="$t('cashShop.table.batchForm.title')"
     :on-before-ok="handleBatchFormBeforeOk"
   >
     <a-form :model="batchFormData">
-      <a-form-item label="已选中SN">
+      <a-form-item :label="$t('cashShop.table.batchForm.selectedSn')">
         <a-space wrap>
           <a-tag v-for="sn in selectedKeys" :key="sn" color="blue">
             {{ sn }}
           </a-tag>
         </a-space>
       </a-form-item>
-      <a-form-item label="编辑类型">
+      <a-form-item :label="$t('cashShop.table.batchForm.editType')">
         <a-select v-model="batchFormData.type">
           <a-option
             v-for="item of batchFormTypeOptions"
             :key="item.value"
             :value="item.value"
-            :label="item.value"
+            :label="$t(item.label)"
           />
         </a-select>
       </a-form-item>
-      <a-form-item label="值">
+      <a-form-item :label="$t('cashShop.table.batchForm.value')">
         <a-input-number v-model="batchFormData.value" />
       </a-form-item>
     </a-form>
@@ -213,7 +239,9 @@
   import { cashShopState } from '@/store/modules/cashShop/type';
   import { getIconUrl } from '@/utils/mapleStoryAPI';
   import { Message, TableRowSelection } from '@arco-design/web-vue';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const { loading, setLoading } = useLoading(false);
 
   const props = defineProps<{
@@ -284,9 +312,9 @@
     batchFormVisible.value = true;
   };
   const batchFormTypeOptions = [
-    { value: '价格' },
-    { value: '数量' },
-    { value: '有效期' },
+    { value: '价格', label: 'cashShop.table.batchForm.type.price' },
+    { value: '数量', label: 'cashShop.table.batchForm.type.count' },
+    { value: '有效期', label: 'cashShop.table.batchForm.type.period' },
   ];
   const batchFormData = ref<batchFormState>({
     data: [],
@@ -295,18 +323,18 @@
   });
   const handleBatchFormBeforeOk = async () => {
     if (batchFormData.value.data.length === 0) {
-      Message.error('你没有选中任何东西');
+      Message.error(t('cashShop.table.batchForm.nothingSelected'));
       return;
     }
     if (batchFormData.value.value === undefined) {
-      Message.error('更新值undefined');
+      Message.error(t('cashShop.table.batchForm.valueUndefined'));
       return;
     }
 
     setLoading(true);
     try {
       await batchOnSale(batchFormData.value);
-      Message.success('更新成功！');
+      Message.success(t('cashShop.table.updateSuccess'));
       await loadData();
     } finally {
       setLoading(false);

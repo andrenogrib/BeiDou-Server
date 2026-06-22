@@ -8,4 +8,5 @@ export default {
   'form.login.password.placeholder': 'password：admin',
   'form.login.user.empty': 'username empty',
   'form.login.password.empty': 'password empty',
+  'form.login.badRequest': 'Bad request',
 };

@@ -9,10 +9,10 @@
     <template #title> {{ title }} </template>
     <div>
       <a-form :model="formData">
-        <a-form-item label="奖池ID">
+        <a-form-item :label="$t('gachapon.form.label.poolId')">
           {{ formData.id }}
         </a-form-item>
-        <a-form-item label="公共池">
+        <a-form-item :label="$t('gachapon.form.label.isPublic')">
           <a-switch v-model="formData.isPublic">
             <template #checked-icon>
               <icon-check />
@@ -22,15 +22,18 @@
             </template>
           </a-switch>
         </a-form-item>
-        <a-form-item label="奖池名称">
+        <a-form-item :label="$t('gachapon.form.label.poolName')">
           <a-input v-model="formData.name" />
         </a-form-item>
-        <a-form-item v-if="!formData.isPublic" label="百宝箱ID">
+        <a-form-item
+          v-if="!formData.isPublic"
+          :label="$t('gachapon.form.label.gachaponId')"
+        >
           <a-input-number v-model="formData.gachaponId" />
         </a-form-item>
         <a-form-item
           v-if="!formData.isPublic && tableData.length > 0"
-          label="概率"
+          :label="$t('gachapon.form.label.probability')"
         >
           <a-slider
             v-model="formData.weight"
@@ -39,7 +42,10 @@
             :format-tooltip="formatter"
           />
         </a-form-item>
-        <a-form-item v-if="!formData.isPublic" label="权重">
+        <a-form-item
+          v-if="!formData.isPublic"
+          :label="$t('gachapon.form.label.weight')"
+        >
           <a-input-number
             v-model="formData.weight"
             :max="10000"
@@ -47,12 +53,15 @@
             :precision="0"
           />
         </a-form-item>
-        <a-form-item v-if="formData.isPublic" label="固定中奖率">
+        <a-form-item
+          v-if="formData.isPublic"
+          :label="$t('gachapon.form.label.fixedRate')"
+        >
           <a-space>
             <a-input-number
               v-model="formData.prob"
               :style="{ width: '320px' }"
-              placeholder="万分之"
+              :placeholder="$t('gachapon.form.placeholder.fixedRate')"
               allow-clear
               :precision="0"
               hide-button
@@ -62,7 +71,7 @@
             {{ formData.prob === undefined ? 0 : formData.prob / 100 }} %
           </a-space>
         </a-form-item>
-        <a-form-item label="生效时间">
+        <a-form-item :label="$t('gachapon.form.label.startTime')">
           <a-date-picker
             v-model="formData.startTime"
             style="width: 220px; margin: 0 24px 24px 0"
@@ -70,7 +79,7 @@
             format="YYYY-MM-DD HH:mm:ss"
           />
         </a-form-item>
-        <a-form-item label="结束时间">
+        <a-form-item :label="$t('gachapon.form.label.endTime')">
           <a-date-picker
             v-model="formData.endTime"
             style="width: 220px; margin: 0 24px 24px 0"
@@ -78,7 +87,7 @@
             format="YYYY-MM-DD HH:mm:ss"
           />
         </a-form-item>
-        <a-form-item label="全服通知">
+        <a-form-item :label="$t('gachapon.form.label.notification')">
           <a-switch v-model="formData.notification">
             <template #checked-icon>
               <icon-check />
@@ -88,7 +97,7 @@
             </template>
           </a-switch>
         </a-form-item>
-        <a-form-item label="备注">
+        <a-form-item :label="$t('gachapon.form.label.comment')">
           <a-input
             v-model="formData.comment"
             :max-length="255"
@@ -111,24 +120,36 @@
               align="center"
             />
             <a-table-column
-              title="名称"
+              :title="$t('gachapon.list.column.name')"
               data-index="name"
               align="center"
               :width="180"
             />
-            <a-table-column title="公共池" align="center" :width="100">
+            <a-table-column
+              :title="$t('gachapon.list.column.isPublic')"
+              align="center"
+              :width="100"
+            >
               <template #cell="{ record }">
-                <a-tag v-if="record.isPublic" color="red">公共池</a-tag>
-                <a-tag v-else color="blue">非公共池</a-tag>
+                <a-tag v-if="record.isPublic" color="red">
+                  {{ $t('gachapon.form.column.publicPool') }}
+                </a-tag>
+                <a-tag v-else color="blue">
+                  {{ $t('gachapon.form.column.ordinaryPool') }}
+                </a-tag>
               </template>
             </a-table-column>
             <a-table-column
-              title="权重"
+              :title="$t('gachapon.form.column.weight')"
               data-index="weight"
               align="center"
               :width="100"
             />
-            <a-table-column title="真实概率" align="center" :width="90">
+            <a-table-column
+              :title="$t('gachapon.form.column.realProb')"
+              align="center"
+              :width="90"
+            >
               <template #cell="{ record }">
                 {{ record.realProb / 10000 }} %
               </template>
@@ -150,11 +171,13 @@
     updatePool,
   } from '@/api/gachapon';
   import { Message } from '@arco-design/web-vue';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const { setLoading, loading } = useLoading(false);
   const visible = ref<boolean>(false);
   const formData = ref<GachaponPoolState>({});
-  const title = ref<string>('创建奖池');
+  const title = ref<string>(t('gachapon.form.title.create'));
 
   const emit = defineEmits(['loadData']);
   const handleBeforeOk = async () => {
@@ -162,7 +185,7 @@
     try {
       await updatePool(formData.value);
       visible.value = false;
-      Message.success('奖池已保存');
+      Message.success(t('gachapon.form.message.saved'));
       emit('loadData');
     } finally {
       setLoading(false);
@@ -205,7 +228,7 @@
         realProb: data.realProb,
         comment: data.comment,
       };
-      title.value = '编辑奖池';
+      title.value = t('gachapon.form.title.edit');
       if (data.gachaponId !== -1) {
         condition.value.gachaponId = data.gachaponId;
         loadData();
@@ -224,7 +247,7 @@
         realProb: undefined,
         comment: undefined,
       };
-      title.value = '创建奖池';
+      title.value = t('gachapon.form.title.create');
     }
     visible.value = true;
   };
@@ -268,7 +291,7 @@
 
   const formatter = (weight: number) => {
     const realProb = calcRealProb(weight);
-    return `权重: ${weight} 概率 ${realProb / 10000} %`;
+    return t('gachapon.form.tooltip', { weight, prob: realProb / 10000 });
   };
 </script>
 

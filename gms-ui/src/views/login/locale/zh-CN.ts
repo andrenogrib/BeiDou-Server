@@ -8,4 +8,5 @@ export default {
   'form.login.password.placeholder': '密码：admin',
   'form.login.user.empty': '用户名不能为空',
   'form.login.password.empty': '密码不能为空',
+  'form.login.badRequest': '错误的请求',
 };

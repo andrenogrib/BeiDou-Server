@@ -9,10 +9,18 @@
       }"
     >
       <template #extra>
-        <a-tag v-if="item.messageType === 0" color="gray">未开始</a-tag>
-        <a-tag v-else-if="item.messageType === 1" color="green">已开通</a-tag>
-        <a-tag v-else-if="item.messageType === 2" color="blue">进行中</a-tag>
-        <a-tag v-else-if="item.messageType === 3" color="red">即将到期</a-tag>
+        <a-tag v-if="item.messageType === 0" color="gray">
+          {{ $t('messageBox.status.notStarted') }}
+        </a-tag>
+        <a-tag v-else-if="item.messageType === 1" color="green">
+          {{ $t('messageBox.status.opened') }}
+        </a-tag>
+        <a-tag v-else-if="item.messageType === 2" color="blue">
+          {{ $t('messageBox.status.inProgress') }}
+        </a-tag>
+        <a-tag v-else-if="item.messageType === 3" color="red">
+          {{ $t('messageBox.status.expiringSoon') }}
+        </a-tag>
       </template>
       <div class="item-wrap" @click="onItemClick(item)">
         <a-list-item-meta>
