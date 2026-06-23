@@ -9,8 +9,8 @@
  ---------------------------------------------------------------------------------------------------
  **/
 
-var menu = ["Mu Lung", "Orbis", "Herb Town", "Mu Lung"];
-var cost = [1500, 1500, 500, 1500];
+var menu = ["Mu Lung", "Orbis", "Herb Town"];
+var cost = [1500, 1500, 500];
 var hak;
 var slct;
 var display = "";
@@ -52,7 +52,7 @@ function action(mode, type, selection) {
                 btwmsg = "#bMu Lung#k to #bOrbis#k";
             }
             if (cm.getPlayer().getMapId() == 251000000) {
-                cm.sendYesNo("Hello there. How's the traveling so far? I've been transporting other travelers like you to #b" + menu[3] + "#k in no time, and... are you interested? It's not as stable as the ship, so you'll have to hold on tight, but i can get there much faster than the ship. I'll take you there as long as you pay #b" + cost[2] + " mesos#k.");
+                cm.sendYesNo("Hello there. How's the traveling so far? I've been transporting other travelers like you to #b" + menu[0] + "#k in no time, and... are you interested? It's not as stable as the ship, so you'll have to hold on tight, but i can get there much faster than the ship. I'll take you there as long as you pay #b" + cost[2] + " mesos#k.");
                 status++;
             } else if (cm.getPlayer().getMapId() == 250000100) {
                 cm.sendSimple("Hello there. How's the traveling so far? I understand that walking on two legs is much harder to cover ground compared to someone like me that can navigate the skies. I've been transporting other travelers like you to other regions in no time, and... are you interested? If so, then select the town you'd like yo head to.\r\n" + display);
