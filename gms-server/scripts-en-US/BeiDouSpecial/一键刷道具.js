@@ -1,4 +1,4 @@
-/**北斗刷道具
+/**BeiDou Item Spawner
 
 
 
@@ -18,29 +18,29 @@ function action(mode, type, selection)
 	{
 	    if (status == 0)
 	    {
-			//第一层对话
-			cm.sendGetNumber("Enter an item ID, and I can spawn any item.",0,0,99999999);
+			//First dialog layer
+			cm.sendGetNumber("Enter an #bitem ID#k and I'll spawn it for you.\r\nI can conjure up #rany item#k in the game!",0,0,99999999);
 	    }
 		else if (status == 1 )
 		{
-			//第二层对话
+			//Second dialog layer
 		    if (1)
 		    {
 		    	cm.gainItem(selection,1);
-		    	var text = "Congratulations, you got it!" + "#i" + selection + "#";
+		    	var text = "Here you go, enjoy! You received #i" + selection + "# #r#t" + selection + "##k.";
 		        cm.sendOk(text);
-		        cm.dispose();	
-		    
+		        cm.dispose();
+
 		    }
 		    else
 		    {
-		    	cm.sendOk("That item does not exist!");
-		    	cm.dispose();	
+		    	cm.sendOk("Sorry, #rthat item doesn't exist#k.");
+		    	cm.dispose();
 		    }
 		}
 		else
 		{
-			//最后一层对话完继续循环至此，退出结束
+			//Loop reaches here after the final dialog; exit and finish
 			cm.dispose();
 		}
 	}
@@ -51,7 +51,7 @@ function CheckStatus(mode)
 {
 	if (mode == -1)
 	{
-		cm.dispose();//点击了取消，停止，结束
+		cm.dispose();//Cancel was clicked: stop and finish
 		return false;
 	}
 	
@@ -66,7 +66,7 @@ function CheckStatus(mode)
 	
 	if (status == -1)
 	{
-		cm.dispose();//防止第一层对话带有上一项或者取消按钮而产生bug。
+		cm.dispose();//Prevents a bug when the first dialog has a Previous or Cancel button.
 		return false;
 	}	
 	return true;

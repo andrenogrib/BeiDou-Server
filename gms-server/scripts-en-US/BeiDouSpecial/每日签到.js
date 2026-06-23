@@ -1,13 +1,13 @@
-/**北斗脚本
+/**BeiDou script
 
-签到脚本
+Daily check-in script
 
 ---By hanmburger*/
 var status = -1;
 var text;
 var BeiDouUI ="#fMap/MapHelper.img/BeiDou/logo#";
 
-// 每个礼包所需的在线时长
+// Online time (in minutes) required for each reward tier
 var condition = new Array(30, 60, 120, 180, 240, 300, 360);
 
 function start() 
@@ -22,18 +22,18 @@ function action(mode, type, selection)
 	{
 	    if (status == 0)
 	    {
-			//第一层对话
+			//First dialog level
 			text = cm.getCharacterExtendValue("每日签到",true);
 			if (text == "TRUE")
 			{
-			    cm.sendOk("You have already checked in today. Please come back tomorrow.");
-			    cm.dispose();				
+			    cm.sendOk("You've already done your #bDaily Check-in#k today.\r\n\r\nCome back #rtomorrow#k for your next reward!");
+			    cm.dispose();
 			}
 			else
 			{
 			    cm.saveOrUpdateCharacterExtendValue("每日签到", "TRUE",true);
-			    cm.sendOk("Check-in successful");
-				cm.gainItem(2430033,1);
+			    cm.sendOk("#bDaily Check-in#k complete!\r\n\r\nHere's your reward: #r1,000,000 mesos#k.\r\n\r\nThanks for stopping by, and see you tomorrow!");
+				cm.gainMeso(1000000);
 			    cm.dispose();				
 			}
 	    }
@@ -70,20 +70,20 @@ function CheckStatus(mode)
 	return true;
 }
 
-//获取当前时间
+//Get the current time
 function getNowTime() {
     var date = new Date();
-    //年 getFullYear()：四位数字返回年份
-    var year = date.getFullYear();  //getFullYear()代替getYear()
-    //月 getMonth()：0 ~ 11
+    //Year getFullYear(): returns the four-digit year
+    var year = date.getFullYear();  //getFullYear() replaces getYear()
+    //Month getMonth(): 0 ~ 11
     var month = date.getMonth() + 1;
-    //日 getDate()：(1 ~ 31)
+    //Day getDate(): (1 ~ 31)
     var day = date.getDate();
-    //时 getHours()：(0 ~ 23)
+    //Hour getHours(): (0 ~ 23)
     var hour = date.getHours();
-    //分 getMinutes()： (0 ~ 59)
+    //Minute getMinutes(): (0 ~ 59)
     var minute = date.getMinutes();
-    //秒 getSeconds()：(0 ~ 59)
+    //Second getSeconds(): (0 ~ 59)
     var second = date.getSeconds();
 
     var time = 'The current time is: ' + year + '-' + addZero(month) + '-' + addZero(day) + ' ' + addZero(hour) + ':' + addZero(minute) + ':' + addZero(second);
@@ -91,7 +91,7 @@ function getNowTime() {
 }
 
 
-//小于10的拼接上0字符串
+//Pad values below 10 with a leading zero
 function addZero(s) {
     return s < 10 ? ('0' + s) : s;
 }

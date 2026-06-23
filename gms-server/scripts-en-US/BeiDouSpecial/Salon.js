@@ -7,7 +7,7 @@ var beauty = 0;
 var newHairs = [];
 var newFaces = [];
 
-// 注释掉的发型会引起崩溃或异常
+// Commented-out hairstyles cause crashes or glitches
 var hairColors = {
     30000: [0, 1, 2, 3, 4, 5, 6, 7],
     30010: [0],
@@ -943,14 +943,22 @@ function action(mode, type, selection) {
     }
 
     if (status === 0) {
-        var text = "#e#r BeiDouMS Truly Beautiful Cosmetic Clinic (Thanks to ColaMint and Xiaominghupan for sharing)#k#n\r\n";
-        text += "My nose is fake, my eyes are fake, but my beauty is real!\r\n\r\n"
-        text += "#L10#Hairstyle Set 1#l\t#L11#Hairstyle Set 2#l\t#L12#Hairstyle Set 3 (Not Available)#l\t\r\n";
-        text += "#L13#Hairstyle Set 4 (Not Available)#l\t#L14#Hairstyle Set 5 (Not Available)#l\r\n";
-        text += "#L20#Face Set 1#l\t#L21#Face Set 2 (Not Available)#l\r\n";
-        text += "#L30#Hair Color#l\r\n";
-        text += "#L40#Face Color#l\r\n";
-        text += "#L50#Skin Color#l\r\n";
+        var text = "#e#rBeiDouMS Beauty Salon#k#n\r\n";
+        text += "#bThanks to ColaMint & Xiaominghupan for sharing.#k\r\n";
+        text += "My nose is fake, my eyes are fake, but my beauty is real!\r\n\r\n";
+        text += "#r#eHairstyle#n#k\r\n";
+        text += "#L10##bHairstyle Set 1#k#l\r\n";
+        text += "#L11##bHairstyle Set 2#k#l\r\n";
+        text += "#L12##bHairstyle Set 3#k #r(Not Available)#k#l\r\n";
+        text += "#L13##bHairstyle Set 4#k #r(Not Available)#k#l\r\n";
+        text += "#L14##bHairstyle Set 5#k #r(Not Available)#k#l\r\n\r\n";
+        text += "#r#eFace#n#k\r\n";
+        text += "#L20##bFace Set 1#k#l\r\n";
+        text += "#L21##bFace Set 2#k #r(Not Available)#k#l\r\n\r\n";
+        text += "#r#eColors#n#k\r\n";
+        text += "#L30##bHair Color#k#l\r\n";
+        text += "#L40##bFace Color#k#l\r\n";
+        text += "#L50##bSkin Color#k#l";
         cm.sendSimple(text);
     } else if (status === 1) {
         if (selection >= 10 && selection < 20) {

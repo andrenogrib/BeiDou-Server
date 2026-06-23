@@ -8,59 +8,59 @@ function start() {
     levelStart();
 }
 
-// 对话开始
+// Conversation start
 function levelStart() {
-    text = "#eDelete Items#n\r\n\r\n";
+    text = "#r#eDelete Items#n#k\r\n\r\nWhich inventory tab would you like to clean up?\r\n\r\n";
     for (let i = 1; i <= 5; i++) {
-        text += "#L" + i + "#Delete items in the " + column[i-1] + " tab#l\r\n";
+        text += "#L" + i + "##bDelete items in the " + column[i-1] + " tab#k#l\r\n";
     }
-    // 选择删除哪一栏
+    // Choose which inventory tab to clear
     cm.sendNextSelectLevel("ChooseInventory", text);
 }
 
-// 选择了背包栏
+// Inventory tab selected
 function levelChooseInventory(choose) {
     sel = choose;
-    // 选择全部清除，还是删除指定
-    cm.sendSelectLevel("ChooseType", "#L1#Clear all items#l\r\n#L2#Delete a specific item#l\r\n");
+    // Choose between clearing everything or deleting a specific item
+    cm.sendSelectLevel("ChooseType", "How would you like to clean up the #b" + column[sel-1] + "#k tab?\r\n\r\n#L1##bClear all items#k#l\r\n#L2##bDelete a specific item#k#l\r\n");
 }
 
-// 选择了删除方式1
+// Delete method 1 selected
 function levelChooseType1() {
-    // 选择否回到levelStart，选择是执行levelDoClear
-    cm.sendYesNoLevel("Start", "DoClear", "#rDo you want to clear all items in the " + column[sel-1] + " tab??? This action cannot be undone!#k");
+    // "No" returns to levelStart, "Yes" runs levelDoClear
+    cm.sendYesNoLevel("Start", "DoClear", "Are you sure you want to clear #rall#k items in the #b" + column[sel-1] + "#k tab?\r\n\r\n#rThis action cannot be undone!#k");
 }
 
-// 选择了删除方式2
+// Delete method 2 selected
 function levelChooseType2() {
-    text = "Choose the item to delete\r\n\r\n";
+    text = "#r#eSelect an Item#n#k\r\n\r\nChoose the item you would like to delete:\r\n\r\n";
     let hasVal = false;
     for (let i = 0; i < 96; i++) {
         let item = cm.getInventory(sel).getItem(i);
         if (item) {
             hasVal = true;
-            text += "#L" + item.getPosition() + "##t" + item.getItemId() + "##i" + item.getItemId() + "##l\r\n";
+            text += "#L" + item.getPosition() + "##i" + item.getItemId() + "# #b#t" + item.getItemId() + "##k#l\r\n";
         }
     }
     if (!hasVal) {
-        // 回到levelStart
-        cm.sendNextLevel("Start", "There are no items in this inventory tab!");
+        // Return to levelStart
+        cm.sendNextLevel("Start", "There are no items in the #b" + column[sel-1] + "#k tab!");
         return;
     }
-    // 选择单个道具
+    // Choose a single item
     cm.sendNextSelectLevel("DoRemove", text);
 }
 
-// 是否清除选择了是
+// "Yes" was chosen for clearing
 function levelDoClear() {
     cm.removeAllByInventory(sel);
-    // 回到levelStart
-    cm.sendOkLevel("Start", "Cleared!");
+    // Return to levelStart
+    cm.sendOkLevel("Start", "The #b" + column[sel-1] + "#k tab has been #rcleared#k!");
 }
 
-// 执行删除操作
+// Perform the delete operation
 function levelDoRemove(choose) {
     cm.removeAllByInventorySlot(sel, choose);
-    // 回到选择单个道具
-    cm.sendNextLevel("ChooseType2", "Cleared!");
+    // Return to the single-item selection
+    cm.sendNextLevel("ChooseType2", "The item has been #rdeleted#k!");
 }

@@ -1,7 +1,7 @@
 /**
- * @description 学习技能
+ * @description Learn skill
  */
-var OldTitle = "#eBeiDou Skill Learning Center#n\r\n";
+var OldTitle = "#r#eBeiDou Skill Learning Center#n#k\r\n\r\n";
 var status = -1;
 var lastSkillInfo = null;
 var resultType = "";
@@ -31,31 +31,31 @@ function action(mode, type, selection) {
 
 function showSkillList() {
     var player = cm.getPlayer();
-    
-    // 检查玩家技能状态
+
+    // Check the player's current skill status
     var hasDoubleJump = player.getSkillLevel(4111006) > 0;
     var hasTeleport = player.getSkillLevel(2101002) > 0;
-    
+
     var text = OldTitle;
-    text += "Click a skill to auto-complete:#n\r\n\r\n";
-    text += "1. Learn the skill (if not yet learned)\r\n";
-    text += "2. Bind it to the specified key\r\n\r\n";
-    text += "#b════════════════#k\r\n\r\n";
-    
-    // 根据技能状态显示不同的文本
+    text += "Pick a #bskill#k below and I'll handle the rest for you:\r\n\r\n";
+    text += "1. Learn the skill (if you haven't yet)\r\n";
+    text += "2. Bind it to the right key\r\n\r\n";
+    text += "#b------------------------#k\r\n\r\n";
+
+    // Show different wording depending on whether the skill is already learned
     if (hasDoubleJump) {
-        text += "#L0##b#s4111006# #q4111006##k (Already learned, rebind to the #e-#n key)#l\r\n\r\n";
+        text += "#L0##b#s4111006# #q4111006##k (already learned — rebind to the #r-#k key)#l\r\n\r\n";
     } else {
-        text += "#L0##b#s4111006# #q4111006##k (Learn and bind to the #e-#n key)#l\r\n\r\n";
+        text += "#L0##b#s4111006# #q4111006##k (learn and bind to the #r-#k key)#l\r\n\r\n";
     }
 
     if (hasTeleport) {
-        text += "#L1##b#s2101002# #q2101002##k (Already learned, rebind to the #e+#n key)#l\r\n\r\n";
+        text += "#L1##b#s2101002# #q2101002##k (already learned — rebind to the #r+#k key)#l\r\n\r\n";
     } else {
-        text += "#L1##b#s2101002# #q2101002##k (Learn and bind to the #e+#n key)#l\r\n\r\n";
+        text += "#L1##b#s2101002# #q2101002##k (learn and bind to the #r+#k key)#l\r\n\r\n";
     }
 
-    text += "#L2#Cancel#l";
+    text += "#L2##bCancel#k#l";
     
     cm.sendSimple(text);
 }
@@ -64,27 +64,27 @@ function handleSkillSelection(selection) {
     var skillId, keyCode, skillName, keyName, keySymbol;
     
     switch (selection) {
-        case 0:  // 二段跳
+        case 0:  // Double Jump
             skillId = 4111006;
-            keyCode = 12;  // -键
+            keyCode = 12;  // - key
             skillName = "#q4111006#";
-            keyName = "the #e-#n key";
-            keySymbol = "#e-#n";
+            keyName = "the #r-#k key";
+            keySymbol = "#r-#k";
             break;
-        case 1:  // 快速移动
+        case 1:  // Teleport
             skillId = 2101002;
-            keyCode = 13;  // +键
+            keyCode = 13;  // + key
             skillName = "#q2101002#";
-            keyName = "the #e+#n key";
-            keySymbol = "#e+#n";
+            keyName = "the #r+#k key";
+            keySymbol = "#r+#k";
             break;
-        case 2:  // 取消
-            cm.sendOk("#bCancelled.#k");
+        case 2:  // Cancel
+            cm.sendOk("No problem — come back anytime!");
             cm.dispose();
             return;
     }
-    
-    // 保存技能信息
+
+    // Save the selected skill info
     lastSkillInfo = {
         skillId: skillId,
         keyCode: keyCode,
@@ -93,35 +93,35 @@ function handleSkillSelection(selection) {
         keySymbol: keySymbol
     };
     
-    // 处理技能学习和绑定
+    // Process the skill learning and key binding
     var result = processSkill(skillId, keyCode, skillName, keyName, keySymbol);
-    
-    // 记录结果类型
+
+    // Record the result type
     resultType = result.success ? "success" : "fail";
-    
-    // 显示结果
+
+    // Show the result
     showResult(result);
 }
 
 function showResult(result) {
     var text = OldTitle;
-    text += "#b════════════════#k\r\n";
-    
+    text += "#b------------------------#k\r\n";
+
     if (result.success) {
-        text += "#eResult#n\r\n";
-        text += "#b════════════════#k\r\n\r\n";
+        text += "#r#eResult#n#k\r\n";
+        text += "#b------------------------#k\r\n\r\n";
         text += result.message;
-        text += "\r\n\r\n#b════════════════#k\r\n\r\n";
-        text += "#L0#Learn another skill#l\r\n";
-        text += "#L1#Done#l";
+        text += "\r\n\r\n#b------------------------#k\r\n\r\n";
+        text += "#L0##bLearn another skill#k#l\r\n";
+        text += "#L1##bDone#k#l";
     } else {
-        text += "#rOperation failed#n\r\n";
-        text += "#b════════════════#k\r\n\r\n";
+        text += "#r#eOperation failed#n#k\r\n";
+        text += "#b------------------------#k\r\n\r\n";
         text += result.message;
-        text += "\r\n\r\n#b════════════════#k\r\n\r\n";
-        text += "#L0#Try again#l\r\n";
-        text += "#L1#Back#l\r\n";
-        text += "#L2#Cancel#l";
+        text += "\r\n\r\n#b------------------------#k\r\n\r\n";
+        text += "#L0##bTry again#k#l\r\n";
+        text += "#L1##bBack#k#l\r\n";
+        text += "#L2##bCancel#k#l";
     }
     
     cm.sendSimple(text);
@@ -130,17 +130,17 @@ function showResult(result) {
 function handleResultSelection(selection) {
     if (resultType === "success") {
         if (selection === 0) {
-            // 继续学习其他技能
+            // Keep learning other skills
             status = 0;
             showSkillList();
         } else if (selection === 1) {
-            // 完成并关闭窗口
-            cm.sendOk("#bOperation complete.#k");
+            // Finish and close the window
+            cm.sendOk("All done — enjoy your new skill!");
             cm.dispose();
         }
     } else if (resultType === "fail") {
         if (selection === 0) {
-            // 重新尝试
+            // Try again
             if (lastSkillInfo !== null) {
                 var result = processSkill(
                     lastSkillInfo.skillId,
@@ -156,29 +156,29 @@ function handleResultSelection(selection) {
                 showSkillList();
             }
         } else if (selection === 1) {
-            // 返回技能列表
+            // Back to the skill list
             status = 0;
             showSkillList();
         } else if (selection === 2) {
-            // 取消
-            cm.sendOk("#bCancelled.#k");
+            // Cancel
+            cm.sendOk("No problem — come back anytime!");
             cm.dispose();
         }
     }
 }
 
-// 处理技能学习和绑定的主函数
+// Main function that handles learning and binding a skill
 function processSkill(skillId, keyCode, skillName, keyName, keySymbol) {
     var player = cm.getPlayer();
     var messages = [];
     var success = true;
     var alreadyLearned = false;
-    
-    // 检查是否已学习技能
+
+    // Check whether the skill is already learned
     var hasSkill = player.getSkillLevel(skillId) > 0;
-    
+
     if (!hasSkill) {
-        // 学习技能 - 直接学习，跳过职业检查
+        // Learn the skill directly, skipping the job check
         var learnResult = learnSkill(skillId, skillName);
         if (learnResult.success) {
             messages.push(learnResult.message);
@@ -187,11 +187,11 @@ function processSkill(skillId, keyCode, skillName, keyName, keySymbol) {
             success = false;
         }
     } else {
-        messages.push("#gAlready learned " + skillName + ".#k");
+        messages.push("#gYou already know " + skillName + ".#k");
         alreadyLearned = true;
     }
-    
-    // 绑定技能
+
+    // Bind the skill to a key
     if (success) {
         var bindResult = bindSkill(skillId, skillName, keyCode, keyName, keySymbol, alreadyLearned);
         if (bindResult.success) {
@@ -208,23 +208,23 @@ function processSkill(skillId, keyCode, skillName, keyName, keySymbol) {
     };
 }
 
-// 学习技能的函数 - 修改版，跳过职业检查
+// Function that learns a skill - modified to skip the job check
 function learnSkill(skillId, skillName) {
     var player = cm.getPlayer();
-    
+
     if (player.getSkillLevel(skillId) > 0) {
-        return {success: true, message: "#gAlready learned " + skillName + ".#k"};
+        return {success: true, message: "#gYou already know " + skillName + ".#k"};
     }
-    
+
     try {
         var SkillFactory = Java.type('org.gms.client.SkillFactory');
         var skill = SkillFactory.getSkill(skillId);
-        
+
         if (skill == null) {
-            return {success: false, message: "Skill does not exist"};
+            return {success: false, message: "that skill does not exist"};
         }
-        
-        // 获取技能最大等级
+
+        // Get the skill's max level
         var maxLevel = 20;
         try {
             maxLevel = skill.getMaxLevel();
@@ -234,47 +234,47 @@ function learnSkill(skillId, skillName) {
         } catch (e) {
             maxLevel = 20;
         }
-        
-        // 直接学习技能，不检查职业限制
+
+        // Learn the skill directly, with no job restriction check
         player.changeSkillLevel(skill, maxLevel, maxLevel, -1);
-        
+
         return {
-            success: true, 
-            message: "#gLearned " + skillName + "#k\r\n" +
-                     "Level: " + maxLevel + "/" + maxLevel
+            success: true,
+            message: "#gLearned " + skillName + "!#k\r\n" +
+                     "Level: #b" + maxLevel + "/" + maxLevel + "#k"
         };
-        
+
     } catch (e) {
-        return {success: false, message: "Learning error: " + e.toString()};
+        return {success: false, message: "learning error: " + e.toString()};
     }
 }
 
-// 绑定技能的函数
+// Function that binds a skill to a key
 function bindSkill(skillId, skillName, keyCode, keyName, keySymbol, alreadyLearned) {
     var player = cm.getPlayer();
-    
+
     if (player.getSkillLevel(skillId) <= 0) {
-        return {success: false, message: "You have not learned this skill yet"};
+        return {success: false, message: "you have not learned this skill yet"};
     }
-    
+
     try {
         var KeyBinding = Java.type('org.gms.client.keybind.KeyBinding');
         var javaKeyBinding = new KeyBinding(1, skillId);
-        
+
         player.changeKeybinding(keyCode, javaKeyBinding);
-        
+
         var message = "";
         if (alreadyLearned) {
             message = "#gRebound " + skillName + " to " + keyName + "#k";
         } else {
             message = "#gBound " + skillName + " to " + keyName + "#k";
         }
-        
-        message += "\r\nKey: " + keySymbol + " key";
-        message += "\r\n#eNote:#n Change channel to see the key binding update";
-        
+
+        message += "\r\nKey: " + keySymbol;
+        message += "\r\n#r#eNote:#n#k change channel to see the key binding update.";
+
         return {success: true, message: message};
-        
+
     } catch (e1) {
         try {
             var KeyBinding = Java.type('org.gms.client.keybind.KeyBinding');
@@ -287,9 +287,9 @@ function bindSkill(skillId, skillName, keyCode, keyName, keySymbol, alreadyLearn
             } else if (typeof player.updateKeybinding === 'function') {
                 player.updateKeybinding(keyCode, javaKeyBinding);
             } else {
-                return {success: false, message: "Binding is not supported"};
+                return {success: false, message: "key binding is not supported"};
             }
-            
+
             var message = "";
             if (alreadyLearned) {
                 message = "#gRebound " + skillName + " to " + keyName + "#k";
@@ -297,13 +297,13 @@ function bindSkill(skillId, skillName, keyCode, keyName, keySymbol, alreadyLearn
                 message = "#gBound " + skillName + " to " + keyName + "#k";
             }
 
-            message += "\r\nKey: " + keySymbol + " key";
-            message += "\r\n#eNote:#n Change channel to see the key binding update";
-            
+            message += "\r\nKey: " + keySymbol;
+            message += "\r\n#r#eNote:#n#k change channel to see the key binding update.";
+
             return {success: true, message: message};
-            
+
         } catch (e2) {
-            return {success: false, message: "Binding error: " + e2.toString()};
+            return {success: false, message: "binding error: " + e2.toString()};
         }
     }
 }

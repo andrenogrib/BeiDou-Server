@@ -1,113 +1,115 @@
 /**
- * 名称：在线奖励(nextlevel版)
- * 功能：用于颁发在线奖励的脚本，采用JSON配置阶段奖励，NextLevel构造脚本，具有配置清晰便捷、代码逻辑清晰的特点。
- * 		支持配置的奖励有 金币、经验、点券、抵用券、信用点 和 有效物品
- * 		支持输入整数按份领取奖励列表
- * 作者：Magical-H (https://www.github.com/Magical-H)
- * 版本：1.0
- * 日期：2025-06-27
+ * Name: Online Rewards (nextlevel version)
+ * Purpose: Script for granting online-time rewards. Reward tiers are configured via JSON and
+ * 		built with NextLevel, keeping both the configuration and the code logic clean and easy to follow.
+ * 		Supported reward types: meso, EXP, NX Cash, Maple Points, Gift Tokens, and regular items.
+ * 		Supports entering an integer to claim multiple sets from the reward list.
+ * Author: Magical-H (https://www.github.com/Magical-H)
+ * Version: 1.0
+ * Date: 2025-06-27
  */
 
 /**
- * 奖励配置
- * - itemlist的id解释：
- * - 0：金币;
- * - 1：点券;
- * - 2：抵用券;
- * - 4、信用点;
- * - 5、经验值;
- * - id ≥ 1_000_000 的为有效物品ID，自动区分，你只需要操心客户端有没有填入的物品即可。
+ * Reward configuration
+ * - itemlist id meanings:
+ * - 0: meso;
+ * - 1: NX Cash;
+ * - 2: Maple Points;
+ * - 4: Gift Tokens;
+ * - 5: EXP;
+ * - An id >= 1_000_000 is treated as a regular item ID (detected automatically); you only need to make
+ *   sure the item exists in the client.
  */
 var config = {
 	reward:[
 		{
-			online:10,	//时长限制，单位：分钟
+			online:10,	//time requirement, in minutes
 			itemlist:[
-				// id解释：0：金币;  1：点券;  2：抵用券;  4、信用点; 5、经验值;  id ≥ 1_000_000 的为有效物品ID，自动区分，你只需要操心客户端有没有填入的物品即可。
-				{id:0,qty:10000},	//金币，数量1万
-				{id:2430033,qty:5}	//北斗指南书碎片，数量5
+				// id meanings: 0: meso;  1: NX Cash;  2: Maple Points;  4: Gift Tokens; 5: EXP;  id >= 1_000_000 is a regular item ID (detected automatically); just make sure the item exists in the client.
+				{id:0,qty:10000},	//meso, 10,000
+				{id:2430033,qty:5}	//BeiDou Guidebook Fragment, qty 5
 			]
 		},{
 			online:30,
 			itemlist:[
-				{id:0,qty:50000},	//金币
-				{id:1,qty:1000},	//点券，数量1千
-				{id:2430033,qty:10}	//北斗指南书碎片
+				{id:0,qty:50000},	//meso
+				{id:1,qty:1000},	//NX Cash, 1,000
+				{id:2430033,qty:10}	//BeiDou Guidebook Fragment
 			]
 		},{
 			online:60,
 			itemlist:[
-				{id:0,qty:100000},	//金币
-				{id:1,qty:1000},	//点券，数量1千
-				{id:2430033,qty:15},	//北斗指南书碎片
+				{id:0,qty:100000},	//meso
+				{id:1,qty:1000},	//NX Cash, 1,000
+				{id:2430033,qty:15},	//BeiDou Guidebook Fragment
 			]
 		},{
 			online:120,
 			itemlist:[
-				{id:0,qty:150000},	//金币
-				{id:1,qty:3000},	//点券，数量1千
-				{id:2430033,qty:20},	//北斗指南书碎片
+				{id:0,qty:150000},	//meso
+				{id:1,qty:3000},	//NX Cash
+				{id:2430033,qty:20},	//BeiDou Guidebook Fragment
 			]
 		},{
 			online:240,
 			itemlist:[
-				{id:0,qty:200000},	//金币
-				{id:1,qty:4000},	//点券，数量1千
-				{id:2430033,qty:25},	//北斗指南书碎片
-				{id:4310000,qty:1}	//绝对音感
+				{id:0,qty:200000},	//meso
+				{id:1,qty:4000},	//NX Cash
+				{id:2430033,qty:25},	//BeiDou Guidebook Fragment
+				{id:4310000,qty:1}	//Perfect Pitch
 			]
 		},{
 			online:360,
 			itemlist:[
-				{id:0,qty:400000},	//金币
-				{id:1,qty:5000},	//点券，数量1千
-				{id:2430033,qty:30},	//北斗指南书碎片
-				{id:4310000,qty:2}	//绝对音感
+				{id:0,qty:400000},	//meso
+				{id:1,qty:5000},	//NX Cash
+				{id:2430033,qty:30},	//BeiDou Guidebook Fragment
+				{id:4310000,qty:2}	//Perfect Pitch
 			]
 		},{
 			online:480,
 			itemlist:[
-				{id:0,qty:500000},	//金币
-				{id:1,qty:6000},	//点券，数量1千
-				{id:2430033,qty:35},	//北斗指南书碎片
-				{id:4310000,qty:3}	//绝对音感
+				{id:0,qty:500000},	//meso
+				{id:1,qty:6000},	//NX Cash
+				{id:2430033,qty:35},	//BeiDou Guidebook Fragment
+				{id:4310000,qty:3}	//Perfect Pitch
 			]
 		},
 	]
 }
 
 /**
- * 全局变量
- * - 累计在线分钟数
+ * Global variable
+ * - Accumulated online minutes
  * @type {number}
  */
 var g_OnlineMinutes = 0;
 /**
- * 全局变量
- * - 奖励领取状态
+ * Global variable
+ * - Reward claim status
  * @type {number}
  */
 var g_ClaimStatus;
 /**
- * 全局变量
- * - 待兑换的奖励索引
+ * Global variable
+ * - Index of the reward to be redeemed
  * @type {number}
  */
 var g_Select;
 /**
- * 全局变量
- * - 待兑换的奖励份数
+ * Global variable
+ * - Number of reward sets to be redeemed
  * @type {number}
  */
 var g_itemCount = 1;
 
-// 定义物品显示模板的映射表（ES6对象字面量优化）
+// Display-template lookup table for reward items (ES6 object-literal style)
 const ITEM_TEMPLATES = {
-	0: '#fUI/Basic.img/BtCoin/normal/0#   #fUI/UIWindow.img/QuestIcon/7/0#',	//金币
+	0: '#fUI/Basic.img/BtCoin/normal/0#   #fUI/UIWindow.img/QuestIcon/7/0#',	//meso
 	1: '#fUI/CashShop.img/CashItem/0#   #e#bNX Cash#k#n',
 	2: '#fUI/CashShop.img/CashItem/0#   #e#bMaple Points#k#n',
 	4: '#fUI/CashShop.img/CashItem/0#   #e#bGift Tokens#k#n',
-	5: '#fUI/UIWindow.img/AriantMatch/characterIcon/2#   #fUI/UIWindow.img/QuestIcon/8/0#'	//经验值
+	5: '#fUI/UIWindow.img/AriantMatch/characterIcon/2#   #fUI/UIWindow.img/QuestIcon/8/0#'	//EXP
 };
 
 function start() {
@@ -133,11 +135,11 @@ function leveldispose() {
 }
 
 function levelmain() {
-	text = "Dear player: #e#b#h ##k#n, thank you for your continued support!\r\n";
-	text += `#eOnline time accumulated today: #n${formatMinutes(g_OnlineMinutes)}\r\n`;
-	text += "We have prepared generous online-time rewards for you. Click to claim the rewards below:\r\n";
+	text = "Hello, #e#b#h ##k#n! Thank you for your continued support.\r\n";
+	text += `#eOnline time today: #n${formatMinutes(g_OnlineMinutes)}\r\n`;
+	text += "We've prepared generous online-time #brewards#k for you. Tap an entry below to claim it:\r\n";
 	text += getOnlineRewardListText() + "\r\n\r\n";
-	text += "\r\n【Claiming Notes】\r\n · Each reward must be claimed manually\r\n · Accumulated time is #b#e#rreset#b#n at 0:00 daily#k\r\n · Rewards will not be granted if your inventory is full\r\n · The longer you stay online, the richer the rewards!"
+	text += "\r\n#r#e[ Claiming Notes ]#n#k\r\n · Each reward must be claimed #bmanually#k.\r\n · Your accumulated time #rresets#k daily at #b0:00#k.\r\n · Rewards cannot be granted while your inventory is full.\r\n · The longer you stay online, the richer the rewards!"
 	if (g_ClaimStatus == ((1 << config.reward.length) - 1)) {
 		cm.sendOkLevel("",text);	
 	} else {
@@ -150,12 +152,12 @@ function levelclaimrewards(Select) {
 	g_ClaimStatus |= (1 << Select);
 	let text = "\r\n";
 		text += getRewardList(Select);
-	if (reward.isReceive) {	//已领取
-		text += "\r\n\r\n#r#eYou have already claimed the rewards above and cannot claim them again.#k#n"
-	} else if (!reward.isClaimed) {//未满足在线时长
-		text += "\r\n\r\n#r#eYour online time is not yet enough to claim the rewards above.#k#n"
-	} else {	//待领取
-		text += "\r\n\r\n#b#eYou have met the requirements. Would you like to claim the rewards?#n#k";
+	if (reward.isReceive) {	//already claimed
+		text += "\r\n\r\n#r#eYou have already claimed the rewards above and cannot claim them again.#n#k"
+	} else if (!reward.isClaimed) {//online time requirement not yet met
+		text += "\r\n\r\n#r#eYour online time isn't enough yet to claim the rewards above.#n#k"
+	} else {	//ready to claim
+		text += "\r\n\r\n#b#eYou've met the requirements! Would you like to claim these rewards?#n#k";
 		g_Select = Select;
 		cm.sendYesNoLevel("","giveRewardItems",text);
 		return;
@@ -166,43 +168,43 @@ function levelgiveRewardItems() {
 	cm.sendOkLevel("",giveRewardItems(g_Select,g_itemCount));
 }
 /**
- * 生成奖励物品的显示列表
- * @param {number} Select - 奖励索引
- * @param {Number} [count=1] - 包含奖励数据的配置对象
- * @returns {string} 格式化后的奖励列表字符串，每项用换行符分隔
+ * Build the display list of reward items.
+ * @param {number} Select - reward index
+ * @param {Number} [count=1] - number of reward sets to display
+ * @returns {string} formatted reward list, one item per line
  */
 function getRewardList(Select,count = 1) {
 	let reward = config.reward[Select];
 	let text = reward.title + "\r\n\r\n";
-	return text + reward.itemlist.map(obj => {
-		let { id, qty } = obj;// 通过解构赋值获取当前物品属性
-		let itemshow = ITEM_TEMPLATES[id] ?? '';// 根据物品ID获取基础显示模板（使用空值合并运算符??）
+	return text + reward.itemlist.filter(obj => obj.id < 1_000_000).map(obj => {
+		let { id, qty } = obj;// destructure the current item's properties
+		let itemshow = ITEM_TEMPLATES[id] ?? '';// look up the base display template by item ID (nullish coalescing ??)
 		if (count > 1) qty = `${qty}#k × ${count} sets = #b${qty * count}#k`;
-		// 处理不同物品类型的显示逻辑
-		if (id >= 1_000_000) {  // 有效的物品ID≥7位数，使用数字分隔符提高可读性
+		// handle the display logic per item type
+		if (id >= 1_000_000) {  // a regular item ID has >= 7 digits; numeric separators improve readability
 			itemshow = `#i${id}#   #e#b#t${id}##k#n × #r${qty}#k`;
-		} else if (itemshow) {// 已知物品追加数量显示
+		} else if (itemshow) {// known item: append the quantity
 			itemshow += ` × #r${qty}#k`;
-		} else {// 未知物品显示错误提示
+		} else {// unknown item: show an error notice
 			itemshow = `#fUI/UIWindow.img/KeyConfig/BtHelp/mouseOver/0# #e#rUnknown item ID: [#k ${id} #r]#k#n`;
 		}
-		return `#fUI/CashShop.img/CSDiscount/arrow# ${itemshow}`;// 为每项添加统一前缀并返回
-	}).join('\r\n');  // 用回车换行符连接所有项
+		return `#fUI/CashShop.img/CSDiscount/arrow# ${itemshow}`;// add a uniform prefix to each line and return
+	}).join('\r\n');  // join all lines with CRLF
 }
 /**
- * 发放奖励道具（支持多份兑换）
- * @param {number} Select - 奖励索引
- * @param {number} [count=1] - 兑换份数（默认为1）
- * @returns {string} 发放结果信息（失败时返回无法兑换的物品列表）
+ * Grant the reward items (supports redeeming multiple sets).
+ * @param {number} Select - reward index
+ * @param {number} [count=1] - number of sets to redeem (default 1)
+ * @returns {string} result message (on failure, returns the list of items that couldn't be redeemed)
  */
 function giveRewardItems(Select,count = 1) {
 	if (count <= 0 || count > g_itemCount) {
-		return "The number of sets entered cannot be ≤0 and cannot exceed the maximum of " + g_itemCount;
+		return "The number of sets must be greater than 0 and cannot exceed the maximum of " + g_itemCount;
 	}
 	const reward = config.reward[Select];
-	// 验证普通物品
+	// validate regular items
 	const failedItems = [];
-	const normalItems = reward.itemlist.filter(obj => obj.id >= 1_000_000);
+	const normalItems = []; // safe-mode: skip regular items (missing on this client's WZ -> crash)
 
 	for (const {id, qty} of normalItems) {
 		const totalQty = qty * count;
@@ -212,12 +214,12 @@ function giveRewardItems(Select,count = 1) {
 	}
 
 	if (failedItems.length > 0) {
-		return ` Not enough inventory space to redeem the following items:\r\n\r\n${failedItems.join('\r\n')}`;
+		return `Not enough inventory space to redeem the following items:\r\n\r\n${failedItems.join('\r\n')}`;
 	}
 
-	// 实际发放所有物品
+	// actually grant all of the items
 	const successItems = [];
-	for (const {id, qty} of reward.itemlist) {
+	for (const {id, qty} of reward.itemlist.filter(obj => obj.id < 1_000_000)) {
 		const totalQty = qty * count;
 		let succitemshow;
 
@@ -246,13 +248,13 @@ function giveRewardItems(Select,count = 1) {
 			successItems.push(`#fUI/Basic.img/CheckBox/1# ${succitemshow}`);
 		}
 	}
-	saveOnlineStatus(g_ClaimStatus);//更新领取记录
+	saveOnlineStatus(g_ClaimStatus);//update the claim record
 	cm.dropMessage(0,`You have successfully claimed ${reward.title.toString().replace(/#[a-zA-Z]/g,"")}!`);
 	return `#fUI/UIWindow.img/QuestIcon/4/0#\r\n\r\n${successItems.join('\r\n')}`;
 }
 
 /**
- * 获取当前账号每日在线奖励领取状态
+ * Get the current account's daily online-reward claim status.
  * @returns {string}
  */
 function getOnlineStatus() {
@@ -260,7 +262,7 @@ function getOnlineStatus() {
 }
 
 /**
- * 保存当前账号每日在线奖励领取状态
+ * Save the current account's daily online-reward claim status.
  * @returns {string}
  */
 function saveOnlineStatus(status) {
@@ -269,9 +271,9 @@ function saveOnlineStatus(status) {
 
 
 /**
- * 将分钟格式化为d天h小时m分
- * @param minutes 分钟
- * @returns {string} 格式化字符串
+ * Format a minute count as Xd Yh Zm (days/hours/minutes).
+ * @param minutes minutes
+ * @returns {string} formatted string
  */
 function formatMinutes(minutes) {
 	const days = Math.floor(minutes / 1440);  // 1440 = 24*60
@@ -291,8 +293,8 @@ function formatMinutes(minutes) {
 
 
 /**
- * 获取玩家在线分钟数
- * @returns {number} 在线分钟数
+ * Get the player's online time in minutes.
+ * @returns {number} online minutes
  */
 function getOnlineMinute() {
 	return Math.floor(cm.getOnlineTime() / 60);
@@ -306,7 +308,7 @@ function getOnlineRewardListText() {
 	let CheckBox_2 = "#fUI/Basic.img/CheckBox/2#";
 
 	return config.reward.map((obj, i) => {
-		const isReceived = (g_ClaimStatus & (1 << i)) !== 0;  // 精确检查每一位
+		const isReceived = (g_ClaimStatus & (1 << i)) !== 0;  // check each bit precisely
 		const isClaimable = g_OnlineMinutes >= obj.online;
 		let text = "";
 
@@ -314,19 +316,19 @@ function getOnlineRewardListText() {
 			...obj,
 			isReceive: isReceived,
 			isClaimed: isClaimable,
-			title: `#b【${formatMinutes(obj.online)}#b】Online Reward List`,
+			title: `#b[ ${formatMinutes(obj.online)}#b ]#k Online Reward List`,
 		};
 
 		if (!isReceived) {
 			listtext.push(1);
 			if (isClaimable) {
-				text += `\r\n#L${i}##bClaim【${formatMinutes(obj.online)}#b】online reward ${CheckBox_0}#k#l`;
+				text += `\r\n#L${i}##bClaim the [ ${formatMinutes(obj.online)}#b ] online reward ${CheckBox_0}#k#l`;
 			} else {
-				text += `\r\n#L${i}##rView【${formatMinutes(obj.online)}#r】online reward ${CheckBox_2}#k#l`;
+				text += `\r\n#L${i}##rView the [ ${formatMinutes(obj.online)}#r ] online reward ${CheckBox_2}#k#l`;
 			}
 		} else {
 			if (i > 0 && listtext[i-1] === 1) text += "\r\n";
-			text += `\r\n\t  Claimed【${formatMinutes(obj.online)}】online reward ${CheckBox_1}`;
+			text += `\r\n\t  Claimed the [ ${formatMinutes(obj.online)} ] online reward ${CheckBox_1}`;
 			listtext.push(0);
 		}
 		return text;

@@ -1,14 +1,14 @@
 /*
-脚本：新人福利礼包
-作者：SpicyBurgerKing
-日期：2024-10-31
-备注：北斗开发组
-修改部分内容不给盒子直接给随机金币+点券开荒
+Script: Newbie Welcome Gift
+Author: SpicyBurgerKing
+Date: 2024-10-31
+Note: BeiDou Dev Team
+Modified to skip the gift box and instead grant random Mesos + NX for a head start
  */
 
 var status;
-var mesoQty;    // 金币数量
-var cashQty;    // 点券数量
+var mesoQty;    // Meso amount
+var cashQty;    // NX amount
 
 //Start
 function start()
@@ -23,46 +23,47 @@ function action(mode, type, selection)
 	{
 		if (status == 0)
 		{
-			//第一层对话
+			//First dialog stage
 			var strGetText = cm.getCharacterExtendValue("新人福利礼包");
 			if ( strGetText == "已领取" )
 			{
-				cm.sendOk("You have already claimed the newbie reward. Each character#r may claim it only once.#k");
+				cm.sendOk("You have already claimed the #bNewbie Welcome Gift#k.\r\n\r\nEach character may claim it #ronly once#k.");
 				cm.dispose();
 			}
 			else
 			{
-				// 生成随机数量
-				mesoQty = Math.floor(Math.random() * 501) + 500;     // 金币随机50-100万（可以根据需要调整）
-				cashQty = Math.floor(Math.random() * 101) + 100;  // 点券随机100-200
+				// Generate random amounts
+				mesoQty = Math.floor(Math.random() * 501) + 500;     // Mesos: random 5,000,000-10,000,000 (adjust as needed)
+				cashQty = Math.floor(Math.random() * 101) + 100;  // NX: random 1,000,000-2,000,000
 
-				cm.sendAcceptDecline("Are you sure you want to claim the newbie gift? Each character#r may claim it only once.#k\n\n\r\n"
-					+ "Rewards:\n"
-					+ "#b" + mesoQty + "#k0,000 Mesos\n"
-					+ "#b" + cashQty + "#k0,000 NX");
+				cm.sendAcceptDecline("Are you sure you want to claim the #bNewbie Welcome Gift#k?\r\n\r\n"
+					+ "Each character may claim it #ronly once#k.\r\n\r\n"
+					+ "#r#e Rewards #n#k\r\n"
+					+ "#b" + mesoQty + "0,000 Mesos#k\r\n"
+					+ "#b" + cashQty + "0,000 NX#k");
 			}
 		}
 		else if (status == 1 )
 		{
-			//第二层对话
+			//Second dialog stage
 			cm.saveOrUpdateCharacterExtendValue("新人福利礼包", "已领取");
 
-			// 给金币（注意：这里mesoQty是万为单位，所以需要乘以10000）
+			// Grant Mesos (note: mesoQty is in units of 10,000, so multiply by 10000)
 			cm.gainMeso(mesoQty * 10000);
 
-			// 给点券
+			// Grant NX
 			cm.getPlayer().getCashShop().gainCash(1, cashQty *10000);
 
-			cm.sendOk("Congratulations, you received:\n"
-				+ "#b" + mesoQty + "#k0,000 Mesos\n"
-				+ "#b" + cashQty + "#k0,000 NX\n\n"
+			cm.sendOk("Congratulations! You received:\r\n\r\n"
+				+ "#b" + mesoQty + "0,000 Mesos#k\r\n"
+				+ "#b" + cashQty + "0,000 NX#k\r\n\r\n"
 				+ "Enjoy the game!");
 			cm.dropMessage(5,"[Newbie Reward] Player [" + cm.getPlayer() + "] joined the game and claimed starter Mesos "+mesoQty+"0,000 + NX "+cashQty+"0,000!");
 			cm.dispose();
 		}
 		else
 		{
-			//最后一层对话完继续循环至此，推出结束
+			//Reached after the final dialog stage; exit and end
 			cm.dispose();
 		}
 	}
@@ -84,10 +85,10 @@ function CheckStatus(mode)
 	else
 	{
 		status--;
-		// 如果用户点击"否"，直接结束
+		// If the user clicks "No", end immediately
 		if (status == -1)
 		{
-			cm.sendOk("Alright, come back to claim it next time.");
+			cm.sendOk("No problem! Come back and claim your gift anytime.");
 			cm.dispose();
 			return false;
 		}

@@ -2325,8 +2325,8 @@ function action(mode, type, selection)
 	{
 	    if (status == 0)
 	    {
-			//第一层对话
-			title = "#fMap/MapHelper/weather/rose/0#083 UI list#fMap/MapHelper/weather/rose/0#\r\n#b";
+			//First dialog level
+			title = "#fMap/MapHelper/weather/rose/0#v083 UI List#fMap/MapHelper/weather/rose/0#\r\n#b";
 			for ( i = 0; i < 7; i++)
 			{
 				title += "#L" + i + "#" + co[i][0] + "#l" + "\t";
@@ -2337,7 +2337,7 @@ function action(mode, type, selection)
 	    }
 		else if (status == 1 )
 		{
-			//第二层对话
+			//Second dialog level
 			var iCount = parseInt(co[selection][1]);
 			text = "The UI entries found are listed below, please take a look:\r\n\r\n";
 			for (i = 0; i < iCount; i++)
@@ -2353,7 +2353,7 @@ function action(mode, type, selection)
 		}
 		else
 		{
-			//最后一层对话完继续循环至此，退出结束
+			//After the final dialog level, loop ends here and exits
 			cm.sendOk("The code found is: " + "#r" + UI_Total[target][selection][0] + "#b - copy it and use it if you need it\r\n\r\nIcon: #k" + UI_Total[target][selection][1]);
 			cm.dispose();
 		}

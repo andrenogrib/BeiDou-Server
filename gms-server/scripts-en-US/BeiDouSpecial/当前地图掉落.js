@@ -21,13 +21,13 @@
 */
 
 /**
- * @description 拍卖行中心脚本
+ * @description Drop Rate Lookup center script
  */
 var mogu = "#fUI/UIWindow.img/Minigame/Omok/stone/0/black/0#";
 var ui = "#fUI/Basic.img/BtCoin/normal/0#";
 
 
-var OldTitle ="\t\t\t\t\t"+mogu+"#eWelcome to the#rMaple Story#kScript Center"+mogu+"#n\t\t\t\t\r\n\r\n";
+var OldTitle ="\t\t\t\t\t"+mogu+"#e Welcome to the #rMapleStory#k Script Center "+mogu+"#n\t\t\t\t\r\n\r\n";
 var status = -1;
 var i = 0;
 
@@ -48,13 +48,14 @@ function action(mode, type, selection) {
 
     if (status === 0) {
 		let text = OldTitle;
-        text += ""+ui+"Current NX Cash: " + cm.getPlayer().getCashShop().getCash(1) + "\r\n";
-        text += ""+ui+"Current Maple Points: " + cm.getPlayer().getCashShop().getCash(2) + "\r\n";
-        text += ""+ui+"Current Nexon Points: " + cm.getPlayer().getCashShop().getCash(4) + "\r\n";
-        text += ""+ui+"Current Mesos: " + cm.getPlayer().getMeso() + "\r\n";
+        text += ""+ui+"Current NX Cash: #b" + cm.getPlayer().getCashShop().getCash(1) + "#k\r\n";
+        text += ""+ui+"Current Maple Points: #b" + cm.getPlayer().getCashShop().getCash(2) + "#k\r\n";
+        text += ""+ui+"Current Nexon Points: #b" + cm.getPlayer().getCashShop().getCash(4) + "#k\r\n";
+        text += ""+ui+"Current Mesos: #b" + cm.getPlayer().getMeso() + "#k\r\n";
         text += " \r\n\r\n";
-		text += "#L1#Current Map Drop Rate Lookup#l\r\n";
-		text += "#L2#System Item Drop Rate Lookup#l\r\n";
+		text += "#r#eDrop Rate Lookup#n#k\r\n\r\n";
+		text += "#L1##bCurrent Map Drop Rate#k#l\r\n";
+		text += "#L2##bItem Drop Rate Search#k#l\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -65,7 +66,7 @@ function action(mode, type, selection) {
 
 function doSelect(selection) {
     switch (selection) {
-        // 非GM功能
+        // Non-GM features
         case 1:
             openNpc("当前地图掉落_当前地图");
             break;
@@ -76,7 +77,7 @@ function doSelect(selection) {
 
 
         default:
-            cm.sendOk("This feature is not yet supported. Please stay tuned!");
+            cm.sendOk("This feature is #rnot available yet#k. Please stay tuned!");
             cm.dispose();
     }
 }

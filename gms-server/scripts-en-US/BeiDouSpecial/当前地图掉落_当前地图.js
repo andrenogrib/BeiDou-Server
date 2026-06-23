@@ -1,27 +1,27 @@
 /**
- * 功能：展示当前地图存活的怪物种类以及物品爆率
- * 作者：Magical-H (https://github.com/Magical-H)
- * 版本：1.0
- * 日期：2024-12-02
+ * Function: Shows the types of living monsters on the current map and their item drop rates.
+ * Author: Magical-H (https://github.com/Magical-H)
+ * Version: 1.0
+ * Date: 2024-12-02
  */
 var MonsterInformationProvider;
 var ItemInformationProvider;
 var QuestInfo;
 
-var MapObj;								 //地图对象
-var List_Mob_All;				   //所有怪物列表
-var List_Mob_Boss;				  //BOSS列表
-var List_Mob;						   //普通怪物列表
+var MapObj;								 //map object
+var List_Mob_All;				   //list of all monsters
+var List_Mob_Boss;				  //list of bosses
+var List_Mob;						   //list of normal monsters
 var namelength = 0;
 
 function start(){
-    if(MapObj == null) {		//首次打开进行初始化。
-        MonsterInformationProvider = Java.type('org.gms.server.life.MonsterInformationProvider');//导入 怪物信息 类
-        ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');//导入 物品信息 类
-        QuestInfo = Java.type('org.gms.server.quest.Quest');//导入 任务 类
+    if(MapObj == null) {		//Initialize on first open.
+        MonsterInformationProvider = Java.type('org.gms.server.life.MonsterInformationProvider');//import the monster information class
+        ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');//import the item information class
+        QuestInfo = Java.type('org.gms.server.quest.Quest');//import the quest class
         MapObj = cm.getMap();
-        List_Mob_All = MapObj.getAllMonsters(); //获取当前地图存活的怪物数量，由于未找到获取当前地图固定怪物列表方法，故用此方法代替。
-        //将怪物种类去重并按照Boss和普通怪物区分开
+        List_Mob_All = MapObj.getAllMonsters(); //Get the monsters currently alive on this map. Since there is no method to fetch the map's fixed monster list, this is used instead.
+        //Deduplicate the monster types and split them into bosses and normal monsters.
         [List_Mob, List_Mob_Boss] = Object.values(List_Mob_All.reduce((acc, mob) => (acc.ids.has(mob.getId()) || (acc.ids.add(mob.getId()), mob.isBoss() ? acc.bosses : acc.mobs).push(mob), acc), { ids: new Set(), mobs: [], bosses: [] })).slice(-2);
     }
     levelmain();
@@ -32,28 +32,28 @@ function leveldispose() {
 }
 
 /**
- * 当部分cm.sendLevel方法没有指定下一个跳转方法时会自动跳入null，也就是这里。
+ * When some cm.sendLevel calls do not specify a next handler, they fall through to null, which lands here.
  */
 function levelnull() {
     cm.dispose();
 }
 
 /**
- * 这里是第一层对话框，用于展示当前地图存活的怪物种类。
+ * This is the first dialog level, used to display the types of living monsters on the current map.
  */
 function levelmain() {
     if(List_Mob_All.length == 0) {
-        cm.sendOkLevel('dispose', 'There are no living monsters on this map. Please wait for monsters to respawn before querying.', 2);
+        cm.sendOkLevel('dispose', 'There are no #rliving monsters#k on this map right now.\r\nPlease wait for monsters to respawn, then try again.', 2);
     } else {
-        var Msg_Select = 'Current map #b#eliving#k#n monster list. Click a monster to view its drop list:\r\n'; //怪物选择展示消息
+        var Msg_Select = 'Here are the #bliving monsters#k on this map.\r\nClick a monster to view its #bdrop list#k:\r\n'; //monster selection display message
             Msg_Select += '#d' + '\r\n'.padStart(28,'——') + '#k';
         if(List_Mob_Boss.length > 0) {
-            Msg_Select += `#e#rBOSS#k#n: ${List_Mob_Boss.length} types\r\n`;
+            Msg_Select += `#r#eBOSS#n#k: ${List_Mob_Boss.length} types\r\n`;
             Msg_Select += getSelecttext(List_Mob_Boss);
             if(List_Mob.length > 0) Msg_Select += '#d' + '\r\n'.padStart(28,'——') + '#k';
         }
         if(List_Mob.length > 0) {
-            Msg_Select += `Normal monsters: ${List_Mob.length} types\r\n`;
+            Msg_Select += `#b#eNormal Monsters#n#k: ${List_Mob.length} types\r\n`;
             Msg_Select += getSelecttext(List_Mob);
         }
         cm.sendNextSelectLevel('ShowDropList', Msg_Select,2);
@@ -61,39 +61,39 @@ function levelmain() {
 }
 
 /**
- * 格式化输出当前地图存在的怪物列表选项。
+ * Formats the selectable list of monsters present on the current map.
  * @param moblist
  * @returns {string}
  */
 function getSelecttext(moblist) {
-    let size = moblist.reduce((max, obj) => Math.max(max, obj.getName().length), 0);  //取最长怪物名称长度
+    let size = moblist.reduce((max, obj) => Math.max(max, obj.getName().length), 0);  //get the longest monster name length
     namelength = namelength > size ? namelength : size;
     return moblist.map(obj => {
         let id = obj.getId();
         let select = '#fUI/UIWindow.img/UserList/Friend/icon04# ';
-        let name = !obj.getName() || obj.getName() == 'MISSINGNO' ? `#o${id}#` : obj.getName();     //优先以服务器怪物名称为准，没有的话就显示客户端的
+        let name = !obj.getName() || obj.getName() == 'MISSINGNO' ? `#o${id}#` : obj.getName();     //prefer the server-side monster name; if missing, fall back to the client name
             name = select + name.padEnd(namelength,'\t');
         return `#L${id}#${getMobImage(obj)}\r\n#${(obj.isBoss() ? 'r' : 'b') + name}#k\t[ Lv.${getLevelImage(obj.getLevel())} ] #l`
     }).join('\r\n\r\n') + '\r\n\r\n';
 }
 
 /**
- * 格式化输出指定怪物的掉落物品列表
+ * Formats and outputs the drop item list for the specified monster.
  * @param mobId
  */
 function levelShowDropList(mobId) {
-    const mob = List_Mob_All.find(mob => mob.getId() == mobId);		 //根据怪物ID获取已缓存的怪物对象
+    const mob = List_Mob_All.find(mob => mob.getId() == mobId);		 //get the cached monster object by its ID
     const table = {
         'Item Name' : 0,
         'Base Rate' : 0,
         'Your Rate' : 0,
     }
-    let msgtext = `The queried monster ID [ ${mobId} ] does not exist.`;
+    let msgtext = `The monster you selected ( ID #r${mobId}#k ) could not be found.`;
 
     if(mob != null) {
         let player = cm.getPlayer();
-        let dropall = MonsterInformationProvider.getInstance().retrieveDrop(mobId);										 //根据怪物ID获取掉落物品列表
-        let CountItems = dropall.size();																				//取掉落物品总数量
+        let dropall = MonsterInformationProvider.getInstance().retrieveDrop(mobId);										 //get the drop item list by monster ID
+        let CountItems = dropall.size();																				//get the total number of drop items
         let mobName = !mob.getName() || mob.getName() == 'MISSINGNO' ? `#o${mobId}#` : mob.getName();
         let stats = mob.getStats();
         let statsSize = Math.max(...[mob.getMaxHp(), stats.getPADamage(), stats.getMADamage()].map(v => v.toString().length));
@@ -102,28 +102,28 @@ function levelShowDropList(mobId) {
         msgtext += `HP: ${mob.getMaxHp().toString().padEnd(statsSize,' ')}\t\tMP: ${mob.getMaxMp()}\r\n`;
         msgtext += `P.Atk: ${stats.getPADamage().toString().padEnd(statsSize,' ')}\t\tP.Def: ${stats.getPDDamage()}\r\n`;
         msgtext += `M.Atk: ${stats.getMADamage().toString().padEnd(statsSize,' ')}\t\tM.Def: ${stats.getMDDamage()}\r\n`;
-        // msgtext += `　命中率：${stats.getMADamage()}\t\t　闪避率：${stats.getMDDamage()}\r\n`;
+        // msgtext += `　Accuracy: ${stats.getMADamage()}\t\t　Avoidability: ${stats.getMDDamage()}\r\n`;
         if(CountItems <= 0) {
-            msgtext += `\r\n\r\nNo drops.`;
+            msgtext += `\r\n\r\n#rThis monster has no drops.#k`;
         } else {
-            msgtext += `\r\n\r\n${'-'.repeat(28)}Item Drop List${'-'.repeat(28)}\r\n\r\n`;
-            // 遍历 table 对象的键，并设置其值为键名的长度
+            msgtext += `\r\n\r\n${'-'.repeat(28)}#bItem Drop List#k${'-'.repeat(28)}\r\n\r\n`;
+            // Iterate over the table object's keys and set each value to the length of its key name.
             Object.keys(table).forEach(key => {table[key] = Math.max(table[key],key.length)});
             let dropitemlist = {};
             dropall.filter(drop => drop.itemId > 0).forEach((drop) => {
                 let itemName = ItemInformationProvider.getInstance().getName(drop.itemId);
                 if (itemName != null) {
                     let itemChance = (drop.chance / 10000).toFixed(4);
-                    // 更新 table 中对应的键值以记录最大长度
+                    // Update the matching values in table to record the maximum length.
                     table['Item Name'] = Math.max(table['Item Name'], itemName.length);
                     table['Base Rate'] = Math.max(table['Base Rate'], itemChance.length / 2);
                     table['Your Rate'] = Math.max(table['Your Rate'], itemChance.length / 2);
-                    // 确保 itemName 在结果对象中是唯一的键
-                    // 如果 itemName 可能重复，可以添加索引或其它唯一标识
+                    // Make sure itemName is a unique key in the result object.
+                    // If itemName could repeat, add an index or other unique identifier.
                     dropitemlist[drop.itemId] = {name : itemName , chance : itemChance , questid : drop.questid};
                 }
             });
-            // 确保所有值都是偶数
+            // Make sure all values are even.
             Object.keys(table).forEach(key => table[key] = Math.ceil(table[key] / 2) * 2);
             msgtext += '#b' + Object.entries(table).map(([key,val]) => `${key.padEnd(val,'\t')}`).join('\t') + '#k\r\n';
             msgtext += Object.entries(dropitemlist).map(([itemId, { name, chance ,questid}]) => {
@@ -136,11 +136,11 @@ function levelShowDropList(mobId) {
             ).join('\r\n');
         }
     }
-    cm.sendLastLevel('main',msgtext,2); //这里会出现上一项+确定的对话框，如果点击确定则会进入到levelnull的方法里，估计是源码里没做判断。
+    cm.sendLastLevel('main',msgtext,2); //This shows a "Previous + OK" dialog. Clicking OK jumps to levelnull, presumably because the source code does not handle that case.
 }
 
 /**
- * 提取字符串里的符号数量
+ * Counts the number of symbols (non-CJK characters) in a string.
  * @param str
  * @returns {*|number}
  */
@@ -149,19 +149,19 @@ function countAllSymbols(str) {
 }
 
 /**
- * 以下函数在某些特定的情况下可能会导致客户端闪退
+ * The following function may cause the client to crash in certain specific cases.
  * @param mob
  * @returns {string}
  */
 function getMobImage(mob){
     let type = [null,'stand','fly']
-        type = type[mob.getStats().getMovetype() + 1];    //-1=未知类型，0=陆地类型，1=飞天类型
+        type = type[mob.getStats().getMovetype() + 1];    //-1 = unknown type, 0 = ground type, 1 = flying type
     if(type == null) {
-        return `#fUI/UIWindow.img/Maker/randomRecipe#`;     //没有怪物图片时显示一个问号。
-    } else if (mob.getStats().getImgwidth() > 160 && mob.getStats().getImgheight() > 250) { //如果图片超过指定范围会造成客户端假死，因此这里需要替换成别的图片或者干脆不要。
+        return `#fUI/UIWindow.img/Maker/randomRecipe#`;     //Show a question mark when there is no monster image.
+    } else if (mob.getStats().getImgwidth() > 160 && mob.getStats().getImgheight() > 250) { //If the image exceeds the given size it can freeze the client, so replace it with a different image or omit it.
         return `#fMap/Obj/Tdungeon.img/mushCatle/npc/0/0#\r\n(Image too large to display)`;
     } else {
-        //当前怪物ID最多7位数，不足7位数则需要在前面补0
+        //Monster IDs are at most 7 digits; pad shorter IDs with leading zeros.
         return `#fMob/${mob.getId().toString().padStart(7, '0')}.img/${type}/0#`;
     }
 }

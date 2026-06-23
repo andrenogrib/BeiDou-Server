@@ -1,28 +1,28 @@
 /**
- * 功能：按物品分类查找爆率
- * 整合版（每页50个，显示ID，无子分类，含职业技能书）
- * 版本：1.0
- * 作者：Jason
- * 时间：2026年2月13日
+ * Feature: look up drop rates by item category
+ * Combined version (50 per page, shows IDs, no sub-categories, includes job skill books)
+ * Version: 1.0
+ * Author: Jason
+ * Date: February 13, 2026
  */
 
-// 导入Java类
+// Import Java classes
 var ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');
 var MonsterInformationProvider = Java.type('org.gms.server.life.MonsterInformationProvider');
 var QuestInfo = Java.type('org.gms.server.quest.Quest');
 var DatabaseConnection = Java.type('org.gms.util.DatabaseConnection');
 
-// 常量定义
+// Constants
 const ITEMS_PER_PAGE = 50;
 
-// 全局变量
+// Global variables
 var currentCategory = "";
 var categoryItems = [];
 var currentPage = 0;
 var totalResults = 0;
-var currentMainCategory = 0; // 记录主分类ID（用于返回）
+var currentMainCategory = 0; // Stores the main category ID (used for going back)
 
-// 主分类ID范围（合并后的区间）
+// Main category ID ranges (merged intervals)
 var categoryRanges = {
     1: { name: "Warrior Weapons", ranges: [[1302000,1302999], [1402000,1402999], [1312000,1312999], [1412000,1412999], [1322000,1322999], [1422000,1422999], [1432000,1432999], [1442000,1442999]] },
     2: { name: "Mage Weapons", ranges: [[1372000,1372999], [1382000,1382999]] },
@@ -34,7 +34,7 @@ var categoryRanges = {
     8: { name: "Use Items", ranges: [[2000000,2999999]] },
     9: { name: "Scrolls/Enhancement", ranges: [[2040000,2049999]] },
     10: { name: "Etc Items", ranges: [[4000000,4039999]] },
-    11: { name: "Job Skill Books", ranges: [[2280000,2299999]] } // 新增：技能书(228)和能手册(229)
+    11: { name: "Job Skill Books", ranges: [[2280000,2299999]] } // Added: skill books (228) and mastery books (229)
 };
 
 function start() {
@@ -42,28 +42,29 @@ function start() {
 }
 
 /**
- * 主菜单
+ * Main menu
  */
 function levelStart() {
-    var text = "#e#bPlease select the item category to search:#k#n\r\n\r\n";
-    text += "#L1##rWarrior Weapons#k#l\r\n";
-    text += "#L2##rMage Weapons#k#l\r\n";
-    text += "#L3##rBowman Weapons#k#l\r\n";
-    text += "#L4##rThief Weapons#k#l\r\n";
-    text += "#L5##rPirate Weapons#k#l\r\n";
-    text += "#L6##rArmor#k#l\r\n";
-    text += "#L7##rAccessories#k#l\r\n";
-    text += "#L8##rUse Items#k#l\r\n";
-    text += "#L9##rScrolls/Enhancement#k#l\r\n";
-    text += "#L10##rEtc Items#k#l\r\n";
-    text += "#L11##rJob Skill Books#k#l\r\n";
-    text += "#L12##rClose#k#l";
-    
+    var text = "Welcome to the #bDrop Lookup#k! Pick an item category and I'll show you which monsters drop it.\r\n\r\n";
+    text += "#r#eItem Categories#n#k\r\n";
+    text += "#L1##bWarrior Weapons#k#l\r\n";
+    text += "#L2##bMage Weapons#k#l\r\n";
+    text += "#L3##bBowman Weapons#k#l\r\n";
+    text += "#L4##bThief Weapons#k#l\r\n";
+    text += "#L5##bPirate Weapons#k#l\r\n";
+    text += "#L6##bArmor#k#l\r\n";
+    text += "#L7##bAccessories#k#l\r\n";
+    text += "#L8##bUse Items#k#l\r\n";
+    text += "#L9##bScrolls / Enhancement#k#l\r\n";
+    text += "#L10##bEtc Items#k#l\r\n";
+    text += "#L11##bJob Skill Books#k#l\r\n\r\n";
+    text += "#L12##bClose#k#l";
+
     cm.sendNextSelectLevel('handleMainSelection', text, 2);
 }
 
 /**
- * 处理主菜单选择
+ * Handle main menu selection
  */
 function levelhandleMainSelection(selection) {
     var sel = parseInt(selection);
@@ -77,16 +78,16 @@ function levelhandleMainSelection(selection) {
     }
 }
 
-// ============ 加载物品列表 ============
+// ============ Load item list ============
 function loadCategoryItems(categoryId) {
     var category = categoryRanges[categoryId];
     currentCategory = category.name;
     categoryItems = [];
     currentPage = 0;
-    
+
     try {
         var con = DatabaseConnection.getConnection();
-        // 构建动态SQL：用多个 BETWEEN OR 连接
+        // Build dynamic SQL: join multiple BETWEEN clauses with OR
         var sql = "SELECT itemid FROM drop_data WHERE ";
         var conditions = [];
         var params = [];
@@ -95,7 +96,7 @@ function loadCategoryItems(categoryId) {
             params.push(category.ranges[i][0], category.ranges[i][1]);
         }
         sql += conditions.join(" OR ");
-        sql += " GROUP BY itemid LIMIT 200"; // 最多取200个物品
+        sql += " GROUP BY itemid LIMIT 200"; // Fetch at most 200 items
         
         var ps = con.prepareStatement(sql);
         for (var i = 0; i < params.length; i++) {
@@ -122,56 +123,56 @@ function loadCategoryItems(categoryId) {
             cm.sendOkLevel('levelStart', "#rNo items with drop records were found in this category.#k", 2);
             return;
         }
-        
-        // 按名称排序
+
+        // Sort by name
         categoryItems.sort(function(a, b) {
             return a.name.localeCompare(b.name);
         });
-        
+
         totalResults = categoryItems.length;
         showCategoryItems();
-        
+
     } catch (e) {
-        cm.sendOkLevel('levelStart', "#rAn error occurred while loading the item list:#k" + e, 2);
+        cm.sendOkLevel('levelStart', "#rAn error occurred while loading the item list:#k " + e, 2);
     }
 }
 
 /**
- * 显示物品列表（分页，显示ID）
+ * Show item list (paged, with IDs)
  */
 function showCategoryItems() {
     var start = currentPage * ITEMS_PER_PAGE;
     var end = Math.min(start + ITEMS_PER_PAGE, totalResults);
-    
-    var text = "#e#b" + currentCategory + "#k#n Item List (Total: " + totalResults + "):\r\n\r\n";
-    
+
+    var text = "#r#e" + currentCategory + "#n#k  -  Item List (Total: #b" + totalResults + "#k)\r\n\r\n";
+
     for (var i = start; i < end; i++) {
         var item = categoryItems[i];
         text += "#L" + item.id + "##v" + item.id + "# #b" + item.name + "#k (ID: " + item.id + ")#l\r\n";
     }
-    
+
     text += "\r\n";
-    
-    // 分页控制（使用大正数避免冲突）
+
+    // Pagination controls (use large numbers to avoid clashing with item IDs)
     if (currentPage > 0) {
-        text += "#L9000001#<< Previous Page#l\r\n";
+        text += "#L9000001##b<< Previous Page#k#l\r\n";
     }
     if (end < totalResults) {
-        text += "#L9000002#Next Page >>#l\r\n";
+        text += "#L9000002##bNext Page >>#k#l\r\n";
     }
 
     if (totalResults > ITEMS_PER_PAGE) {
-        text += "\r\nPage " + (currentPage + 1) + " of " + Math.ceil(totalResults / ITEMS_PER_PAGE) + "\r\n";
+        text += "\r\nPage #b" + (currentPage + 1) + "#k of #b" + Math.ceil(totalResults / ITEMS_PER_PAGE) + "#k\r\n";
     }
 
-    text += "\r\n#L9000003#Back to Previous Menu#l\r\n";
-    text += "#L9000004#Back to Main Menu#l";
-    
+    text += "\r\n#L9000003##bBack to Previous Menu#k#l\r\n";
+    text += "#L9000004##bBack to Main Menu#k#l";
+
     cm.sendNextSelectLevel('handleItemSelection', text, 2);
 }
 
 /**
- * 处理物品列表选择
+ * Handle item list selection
  */
 function levelhandleItemSelection(selection) {
     var sel = parseInt(selection);
@@ -183,12 +184,12 @@ function levelhandleItemSelection(selection) {
         currentPage++;
         showCategoryItems();
     } else if (sel == 9000003) {
-        // 返回上级菜单：回到主菜单（因为没有子分类）
+        // Back to previous menu: return to main menu (there are no sub-categories)
         levelStart();
     } else if (sel == 9000004) {
         levelStart();
     } else if (sel > 0) {
-        // 物品ID处理
+        // Handle item ID
         var itemId = sel;
         var itemName = ItemInformationProvider.getInstance().getName(itemId);
         if (itemName) {
@@ -202,10 +203,10 @@ function levelhandleItemSelection(selection) {
 }
 
 /**
- * 显示物品掉落信息
+ * Show item drop information
  */
 function showItemDropInfo(itemId, itemName) {
-    var msg = "#e#b" + itemName + "#k#n (ID: " + itemId + ") Drop Information:\r\n\r\n";
+    var msg = "#r#e" + itemName + "#n#k (ID: " + itemId + ")  -  Drop Information\r\n\r\n";
     
     try {
         var con = DatabaseConnection.getConnection();
@@ -234,7 +235,7 @@ function showItemDropInfo(itemId, itemName) {
         con.close();
         
         if (!hasResults) {
-            msg += "#rNo monsters were found that drop this item.#k";
+            msg += "#rNo monsters are known to drop this item.#k";
         } else {
             for (var i = 0; i < dropList.length; i++) {
                 var drop = dropList[i];
@@ -257,17 +258,17 @@ function showItemDropInfo(itemId, itemName) {
             }
         }
         
-        msg += "\r\n#L9000003#Back to Item List#l   #L9000004#Back to Main Menu#l";
-        
+        msg += "\r\n#L9000003##bBack to Item List#k#l   #L9000004##bBack to Main Menu#k#l";
+
         cm.sendNextSelectLevel('handleDropInfo', msg, 2);
-        
+
     } catch (e) {
-        cm.sendOkLevel('showCategoryItems', "#rAn error occurred during the query:#k" + e, 2);
+        cm.sendOkLevel('showCategoryItems', "#rAn error occurred during the query:#k " + e, 2);
     }
 }
 
 /**
- * 处理爆率详情页的选择
+ * Handle selection on the drop-rate detail page
  */
 function levelhandleDropInfo(selection) {
     var sel = parseInt(selection);
@@ -278,7 +279,7 @@ function levelhandleDropInfo(selection) {
     }
 }
 
-// 错误处理返回
+// Return target used for error handling
 function levelshowCategoryItems() {
     showCategoryItems();
 }
