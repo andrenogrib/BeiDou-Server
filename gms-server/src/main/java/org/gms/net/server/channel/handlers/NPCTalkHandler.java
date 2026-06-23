@@ -59,8 +59,21 @@ public final class NPCTalkHandler extends AbstractPacketHandler {
         int oid = p.readInt();
         MapObject obj = c.getPlayer().getMap().getMapObject(oid);
         if (obj instanceof NPC npc) {
-            if (GameConfig.getServerBoolean("use_debug") && c.getPlayer().isGM()) {
-                c.getPlayer().dropMessage(5, I18nUtil.getMessage("NPCTalkHandler.handlePacket.message1") + npc.getId());
+            // GM/admin helper: on every NPC open, report the NPC id and the script it will run.
+            if (c.getPlayer().isGM()) {
+                final String scriptInfo;
+                if (npc.getId() == NpcId.DUEY) {
+                    scriptInfo = "duey (built-in)";
+                } else if (npc.getId() >= NpcId.GACHAPON_MIN && npc.getId() <= NpcId.GACHAPON_MAX) {
+                    scriptInfo = "gachapon";
+                } else if (npc.getName().endsWith("Maple TV")) {
+                    scriptInfo = "mapleTV";
+                } else if (GameConfig.getServerBoolean("use_rebirth_system") && npc.getId() == GameConfig.getServerInt("rebirth_npc_id")) {
+                    scriptInfo = "rebirth";
+                } else {
+                    scriptInfo = "npc/" + npc.getId() + ".js";
+                }
+                c.getPlayer().dropMessage(5, "NPC ID = " + npc.getId() + " / Script = " + scriptInfo);
             }
 
             if (npc.getId() == NpcId.DUEY) {
