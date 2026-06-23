@@ -48,7 +48,13 @@ public final class ItemMoveHandler extends AbstractPacketHandler {
         if (src < 0 && action > 0) {
             InventoryManipulator.unequip(c, src, action);   //脱下装备
         } else if (action < 0) {
-            InventoryManipulator.equip(c, src, action);     //穿上装备
+            try {
+                InventoryManipulator.equip(c, src, action);     //穿上装备
+            } finally {
+                // Safety net: never leave the client softlocked if equip() bails out early
+                // (e.g. a rejected/incompatible item) without sending a response.
+                c.sendPacket(PacketCreator.enableActions());
+            }
         } else if (action == 0) {
             InventoryManipulator.drop(c, type, src, quantity);
         } else {

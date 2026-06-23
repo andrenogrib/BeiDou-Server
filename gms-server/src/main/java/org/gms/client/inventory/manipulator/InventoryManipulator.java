@@ -556,6 +556,10 @@ public class InventoryManipulator {
             return;
         } else if ((ItemId.isExplorerMount(source.getItemId()) && chr.isCygnus()) ||
                 ((ItemId.isCygnusMount(source.getItemId())) && !chr.isCygnus())) {// Adventurer taming equipment    //冒险家驯服设备
+            // This mount/saddle belongs to the other faction (Explorer vs Cygnus). Reject it,
+            // but ALWAYS re-enable the client first or it softlocks until relog.
+            c.sendPacket(PacketCreator.enableActions());
+            chr.dropMessage(5, "That mount belongs to a different class and can't be equipped.");
             return;
         }
         boolean itemChanged = false;
