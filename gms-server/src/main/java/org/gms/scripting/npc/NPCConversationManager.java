@@ -486,6 +486,61 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return Alliance.createAlliance(getParty(), name);
     }
 
+    /**
+     * Founds a guild for the calling player with NO party / co-founder requirement.
+     * Used by the {@code @guild} menu (guildmenu.js) so a single player can create a guild,
+     * unlike the standard NPC 2010007 flow (which still requires the GMS "party to form a
+     * guild" match-confirmation and is left untouched). Mirrors the lone-leader portion of
+     * {@code MatchCheckerGuildCreation#onMatchAccepted}, but persists the leader's guildid
+     * BEFORE loading the Guild so the leader is correctly loaded as a member (the Guild
+     * constructor builds its member list from {@code characters WHERE guildid = ?}).
+     *
+     * @return 0 = success, 1 = already in a guild, 2 = name unacceptable,
+     * 3 = not enough mesos, 4 = name already taken / engine error.
+     */
+    public int createGuildInstant(String name) {
+        Character mc = getPlayer();
+        if (mc.getGuildId() > 0) {
+            return 1;
+        }
+        if (!isGuildNameAcceptable(name)) {
+            return 2;
+        }
+        int cost = GameConfig.getServerInt("create_guild_cost");
+        if (mc.getMeso() < cost) {
+            return 3;
+        }
+
+        int gid = Server.getInstance().createGuild(mc.getId(), name);
+        if (gid == 0) {
+            return 4; // a guild with this name already exists
+        }
+
+        mc.gainMeso(-cost, true, false, true);
+        mc.getMGC().setGuildId(gid);
+        mc.getMGC().setGuildRank(1);          // guild master
+        mc.getMGC().setAllianceRank(5);
+        mc.saveGuildStatus();                 // persist guildid+rank BEFORE the Guild is loaded
+        Server.getInstance().getGuild(gid, mc.getWorld(), mc); // builds the in-memory guild (leader now a member)
+        Server.getInstance().changeRank(gid, mc.getId(), 1);   // reaffirm leader rank in-memory
+
+        mc.sendPacket(GuildPackets.showGuildInfo(mc));
+
+        Guild guild = mc.getGuild();
+        if (guild != null) {
+            guild.broadcastNameChanged();
+            guild.broadcastEmblemChanged();
+        }
+        return 0;
+    }
+
+    private boolean isGuildNameAcceptable(String name) {
+        // Mirrors GuildOperationHandler#isGuildNameAcceptable: 3-12 chars, letters/digits/_
+        // (CJK allowed too), no spaces or other symbols.
+        return name != null && name.length() >= 3 && name.length() <= 12
+                && name.matches("[\u4e00-\u9fa5a-zA-Z0-9_]+");
+    }
+
     public int getAllianceCapacity() {
         return Server.getInstance().getAlliance(getPlayer().getGuild().getAllianceId()).getCapacity();
     }
