@@ -13,11 +13,16 @@ var COMMANDS = [
     ["@teleport", "Warp to bosses, level maps, towns and events"],
     ["@learnskill", "Learn Double Jump (-) and Teleport (+)"],
     ["@maxskills", "Max every skill for your current job (no books)"],
+    ["@guild", "Create a guild solo (no party), edit emblem, manage it"],
     ["@newbiegift", "One-time starter gift"],
     ["@checkin", "Daily check-in reward"],
     ["@onlinereward", "Reward for time spent online"],
     ["@mapdrops", "See what the current map drops"],
     ["@deleteitems", "Clean out an inventory tab"]
+];
+
+var GM_COMMANDS = [
+    ["@npcinfo", "Toggle the GM NPC id+script chat feedback (on/off)"]
 ];
 
 var CATS = [
@@ -30,12 +35,28 @@ var CATS = [
     ["Anniversary & Maple", [["Anniversary & Maple Gear", 7000700, 154]]]
 ];
 
+// stage 0 = main menu, 1 = shop category (shops + Back), 2 = command info (text + Back)
 var stage = 0;
 var cat = -1;
+var cmd = -1;
+var cmdGm = false;
+
+// Flat, ordered list of the main-menu's selectable lines so click indices always
+// match what hubMain() renders (commands, then categories, then GM section).
+function hubItems() {
+    var items = [];
+    for (var c = 0; c < COMMANDS.length; c++) { items.push(["cmd", c]); }
+    for (var s = 0; s < CATS.length; s++) { items.push(["cat", s]); }
+    if (cm.getPlayer().isGM()) {
+        for (var g = 0; g < GM_COMMANDS.length; g++) { items.push(["gmcmd", g]); }
+        items.push(["gmshop", 0]);
+    }
+    return items;
+}
 
 function hubMain() {
     var t = "#e#rServer Hub#k#n\r\n";
-    t += "Click a #bcommand#k for info, or a #bshop#k to browse.\r\n";
+    t += "Pick a #bcommand#k for info or a #bshop#k to browse.\r\n";
     var i = 0;
     t += "\r\n#r#eCommands#k#n\r\n";
     for (var c = 0; c < COMMANDS.length; c++) {
@@ -49,34 +70,43 @@ function hubMain() {
     }
     if (cm.getPlayer().isGM()) {
         t += "\r\n#r#eGM#k#n\r\n";
+        for (var g = 0; g < GM_COMMANDS.length; g++) {
+            t += "#L" + i + "##b" + GM_COMMANDS[g][0] + "#k#l\r\n";
+            i++;
+        }
         t += "#L" + i + "##bGM Shop#k#l\r\n";
+        i++;
     }
     cm.sendSimple(t);
 }
 
 function hubOnMain(selection) {
-    var nc = COMMANDS.length;
-    var ncat = CATS.length;
-    if (selection < nc) {
-        cm.sendOk("#e#r" + COMMANDS[selection][0] + "#k#n\r\n\r\n" + COMMANDS[selection][1]
-                  + "\r\n\r\nType #b" + COMMANDS[selection][0] + "#k in the chat to use it.");
-        cm.dispose();
-    } else if (selection < nc + ncat) {
-        cat = selection - nc;
-        stage = 1;
-        hubCat();
-    } else {
-        cm.openShopNPC(1337);   // GM Shop (GMs only)
-        cm.dispose();
-    }
+    var items = hubItems();
+    if (selection < 0 || selection >= items.length) { cm.dispose(); return; }
+    var it = items[selection];
+    if (it[0] == "cmd") { cmd = it[1]; cmdGm = false; stage = 2; hubCmdInfo(); }
+    else if (it[0] == "cat") { cat = it[1]; stage = 1; hubCat(); }
+    else if (it[0] == "gmcmd") { cmd = it[1]; cmdGm = true; stage = 2; hubCmdInfo(); }
+    else if (it[0] == "gmshop") { cm.openShopNPC(1337); cm.dispose(); }
+    else { cm.dispose(); }
+}
+
+function hubCmdInfo() {
+    var list = cmdGm ? GM_COMMANDS : COMMANDS;
+    var t = "#e#r" + list[cmd][0] + "#k#n\r\n\r\n" + list[cmd][1]
+          + "\r\n\r\nType #b" + list[cmd][0] + "#k in the chat to use it.\r\n\r\n";
+    t += "#L0##rBack to menu#k#l";
+    cm.sendSimple(t);
 }
 
 function hubCat() {
     var shops = CATS[cat][1];
     var t = "#e#r" + CATS[cat][0] + "#k#n\r\n\r\n";
+    // Keep the count INSIDE the #L..#l link (no trailing text after #l) so nothing overlaps.
     for (var i = 0; i < shops.length; i++) {
-        t += "#L" + i + "##b" + shops[i][0] + "#k#l #r(" + shops[i][2] + " items)#k\r\n";
+        t += "#L" + i + "##b" + shops[i][0] + "#k (" + shops[i][2] + " items)#l\r\n";
     }
+    t += "\r\n#L" + shops.length + "##rBack to menu#k#l";
     cm.sendSimple(t);
 }
 
@@ -84,8 +114,17 @@ function hubOnCat(selection) {
     var shops = CATS[cat][1];
     if (selection >= 0 && selection < shops.length) {
         cm.openShopNPC(shops[selection][1]);
+        cm.dispose();
+    } else {                 // Back to menu
+        stage = 0;
+        hubMain();
     }
-    cm.dispose();
+}
+
+// Both command-info and (implicitly) any stray click return to the main menu.
+function hubBackToMain() {
+    stage = 0;
+    hubMain();
 }
 
 function start() {
@@ -95,5 +134,7 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode != 1) { cm.dispose(); return; }
-    if (stage == 0) { hubOnMain(selection); } else { hubOnCat(selection); }
+    if (stage == 1) { hubOnCat(selection); }
+    else if (stage == 2) { hubBackToMain(); }
+    else { hubOnMain(selection); }
 }

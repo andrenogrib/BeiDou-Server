@@ -25,7 +25,6 @@ import org.gms.client.Character;
 import org.gms.client.Client;
 import org.gms.config.GameConfig;
 import org.gms.constants.game.GameConstants;
-import org.gms.constants.id.MapId;
 import org.gms.net.AbstractPacketHandler;
 import org.gms.net.packet.InPacket;
 import org.gms.net.server.Server;
@@ -220,7 +219,9 @@ public final class GuildOperationHandler extends AbstractPacketHandler {
                 Server.getInstance().changeRank(mc.getGuildId(), cid, newRank);
                 break;
             case 0x0f:
-                if (mc.getGuildId() <= 0 || mc.getGuildRank() != 1 || mc.getMapId() != MapId.GUILD_HQ) {
+                // Emblem can be changed from anywhere (the GUILD_HQ-map requirement was dropped
+                // on purpose so @guild's emblem option works outside the Guild Headquarters).
+                if (mc.getGuildId() <= 0 || mc.getGuildRank() != 1) {
                     log.warn("[Hack] Chr {} tried to change guild emblem without being the guild leader", mc.getName());
                     return;
                 }
