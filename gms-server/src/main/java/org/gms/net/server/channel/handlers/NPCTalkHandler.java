@@ -22,6 +22,7 @@
 package org.gms.net.server.channel.handlers;
 
 import org.gms.client.Client;
+import org.gms.client.command.GmNpcInfo;
 import org.gms.client.processor.npc.DueyProcessor;
 import org.gms.config.GameConfig;
 import org.gms.constants.id.MapId;
@@ -60,7 +61,8 @@ public final class NPCTalkHandler extends AbstractPacketHandler {
         MapObject obj = c.getPlayer().getMap().getMapObject(oid);
         if (obj instanceof NPC npc) {
             // GM/admin helper: on every NPC open, report the NPC id and the script it will run.
-            if (c.getPlayer().isGM()) {
+            // Toggleable at runtime with @npcinfo (GmNpcInfo); defaults to ON each boot.
+            if (c.getPlayer().isGM() && GmNpcInfo.isEnabled()) {
                 final String scriptInfo;
                 if (npc.getId() == NpcId.DUEY) {
                     scriptInfo = "duey (built-in)";

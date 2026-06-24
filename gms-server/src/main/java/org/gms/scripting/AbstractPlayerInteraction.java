@@ -23,6 +23,7 @@ package org.gms.scripting;
 
 import org.gms.client.Character;
 import org.gms.client.*;
+import org.gms.client.command.GmNpcInfo;
 import org.gms.client.inventory.*;
 import org.gms.client.inventory.manipulator.InventoryManipulator;
 import org.gms.config.GameConfig;
@@ -364,6 +365,14 @@ public class AbstractPlayerInteraction {
     public void openNpc(int npcid, String script) {
         if (c.getCM() != null) {
             return;
+        }
+
+        // GM/admin helper: when an NPC is opened through a command/script (e.g. @menu),
+        // report the NPC id and the script it runs. Same feedback as a direct NPC click
+        // (NPCTalkHandler), sharing the @npcinfo runtime toggle. Default script: npc/<id>.js.
+        if (c.getPlayer().isGM() && GmNpcInfo.isEnabled()) {
+            c.getPlayer().dropMessage(5, "NPC ID = " + npcid + " / Script = "
+                    + (script != null ? script : "npc/" + npcid + ".js"));
         }
 
         c.removeClickedNPC();
