@@ -3,13 +3,14 @@
 -- scripts-en-US/npc/2081000.js shows the Horntail Helper on this map and reproduces the original
 -- merchant on every other map, so the Leafre merchant is unaffected.
 --
--- It goes on the LEFT of the entrance floor (x=-250, foothold 5 at y=747), clear of the gate NPC
--- 2081005 (x=235) and of the dragon-morph portals (cs00..cs05, x[-164..348]) so the player doesn't
--- accidentally morph before the fight. type='n' = NPC, team=-1. Idempotent (DELETE first).
+-- It stands just LEFT of the gate NPC 2081005 / Keroben (x=235) at x=100 on foothold 12 (y~744),
+-- close enough to be its companion but with a gap so the sprites/name labels don't overlap. The
+-- dragon-morph portals here (cs00..cs05) have no script implementation, so standing among them is
+-- harmless. type='n' = NPC, team=-1. Idempotent (DELETE first).
 --
 -- Also remove any earlier placement that used the oversized "encrypted slate" sprite (2083000),
 -- which overlapped 2081005 and had a giant dialog portrait.
 DELETE FROM plife WHERE world = 0 AND map = 240040700 AND life = 2083000;
 DELETE FROM plife WHERE world = 0 AND map = 240040700 AND life = 2081000;
 INSERT INTO plife (world, map, life, type, cy, f, fh, rx0, rx1, x, y, hide, mobtime, team)
-VALUES (0, 240040700, 2081000, 'n', 747, 0, 5, -300, -200, -250, 747, 0, 0, -1);
+VALUES (0, 240040700, 2081000, 'n', 744, 0, 12, 50, 150, 100, 744, 0, 0, -1);
