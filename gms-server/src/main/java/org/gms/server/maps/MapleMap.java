@@ -25,6 +25,7 @@ import org.gms.client.BuffStat;
 import org.gms.client.Character;
 import org.gms.client.Client;
 import org.gms.client.autoban.AutobanFactory;
+import org.gms.client.command.GmMapInfo;
 import org.gms.client.inventory.Equip;
 import org.gms.client.inventory.InventoryType;
 import org.gms.client.inventory.Item;
@@ -2405,6 +2406,14 @@ public class MapleMap {
 
         chr.setMapId(mapid);
         chr.updateActiveEffects();
+
+        // GM/admin helper: on every map entry, report the map id and its name.
+        // Toggleable at runtime with @mapinfo (GmMapInfo); defaults to ON each boot.
+        if (chr.isGM() && GmMapInfo.isEnabled()) {
+            String mapLabel = (streetName != null && !streetName.isEmpty() ? streetName + " : " : "")
+                    + (mapName != null ? mapName : "");
+            chr.dropMessage(5, "Map ID = " + mapid + (mapLabel.isEmpty() ? "" : " / Name = " + mapLabel));
+        }
 
         if (this.getHPDec() > 0) {
             getWorldServer().addPlayerHpDecrease(chr);

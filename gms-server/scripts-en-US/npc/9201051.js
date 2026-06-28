@@ -23,7 +23,8 @@ var COMMANDS = [
 ];
 
 var GM_COMMANDS = [
-    ["@npcinfo", "Toggle the GM NPC id+script chat feedback (on/off)"]
+    ["@npcinfo", "Toggle the GM NPC id+script chat feedback (on/off)"],
+    ["@mapinfo", "Toggle the GM map id+name feedback on map entry (on/off)"]
 ];
 
 var CATS = [
