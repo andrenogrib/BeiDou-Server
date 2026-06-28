@@ -63,7 +63,7 @@ function action(mode, type, selection) {
     if (status == 0) {
         cm.sendSimple("#e[Papulatus Helper]#n\r\nThe gate ahead leads to #rPapulatus#k, the Time Sphere. "
             + "I can give you the #b#t" + CRACKED_PIECE + "##k you need to summon it.\r\n"
-            + "#bPapulatus is tough end-game content — go prepared!#k\r\n\r\n"
+            + "#bPapulatus is tough end-game content - go prepared!#k\r\n\r\n"
             + "#L0#Give me a #t" + CRACKED_PIECE + "##l\r\n"
             + "#L1#Take me into the Machine Room (solo fight)#l\r\n"
             + "#L2#How does this work?#l");
@@ -74,11 +74,11 @@ function action(mode, type, selection) {
             cm.sendOk("Here's your #b#t" + CRACKED_PIECE + "##k. Head through the gate to the #bMachine Room#k "
                 + "(#bOrigin of Clocktower#k). The trigger spot is small: #bjump up onto the elevated ledge#k and "
                 + "#bstand right on the glowing crack#k, then #bdrop the #t" + CRACKED_PIECE + "##k there to summon "
-                + "#rPapulatus#k. If dropping is fiddly, just use my #bMachine Room (solo)#k option instead — that "
+                + "#rPapulatus#k. If dropping is fiddly, just use my #bMachine Room (solo)#k option instead - that "
                 + "summons it for you automatically.");
             cm.dispose();
         } else if (sel == 1) {                            // Express to the boss map (solo)
-            cm.sendNext("Off you go to the #rOrigin of Clocktower#k. I'll #bsummon #rPapulatus#k#b for you the moment you arrive#k — "
+            cm.sendNext("Off you go to the #rOrigin of Clocktower#k. I'll #bsummon #rPapulatus#k#b for you the moment you arrive#k - "
                 + "no need to find the cracked dimension or drop anything.\r\n\r\n"
                 + "Kill its first form and it morphs into the real #rPapulatus#k. "
                 + "When you're done (or want out), talk to the #bescape robot#k to leave. Good luck!");

@@ -59,7 +59,7 @@ function action(mode, type, selection) {
     if (status == 0) {
         cm.sendSimple("#e[Zakum Helper]#n\r\nAdobis is busy, so I handle the paperwork. "
             + "I can fast-track your #rZakum#k challenge.\r\n"
-            + "#bZakum is Level 50+ content and hits very hard — go prepared!#k\r\n\r\n"
+            + "#bZakum is Level 50+ content and hits very hard - go prepared!#k\r\n\r\n"
             + "#L0#Unlock everything for Zakum (skip the prequests)#l\r\n"
             + "#L1#Take me straight to Zakum's Altar (solo fight)#l\r\n"
             + "#L2#How does this work?#l");
@@ -76,7 +76,7 @@ function action(mode, type, selection) {
                 + "express option to fight #rZakum#k solo. At the altar, #bdrop one " + "#t" + EYE_OF_FIRE + "##k on it to summon Zakum.");
             cm.dispose();
         } else if (sel == 1) {                            // Express to the Altar (solo)
-            cm.sendNext("Off you go to #rZakum's Altar#k — I'll hand you a fresh #b#t" + EYE_OF_FIRE + "##k on the way.\r\n\r\n"
+            cm.sendNext("Off you go to #rZakum's Altar#k - I'll hand you a fresh #b#t" + EYE_OF_FIRE + "##k on the way.\r\n\r\n"
                 + "Land on the left, walk to the #baltar in the middle#k, and #bdrop the #t" + EYE_OF_FIRE + "##k on it to summon Zakum. "
                 + "When you're done (or want out), talk to #bAmon#k to leave. Good luck!");
         } else {                                          // How does this work?
