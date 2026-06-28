@@ -46,8 +46,13 @@
         <int name="0" value="4031179"/>
         <int name="1" value="1"/>
         <int name="2" value="1"/>
-        <vector name="lt" x="53" y="-119"/>
-        <vector name="rb" x="61" y="-84"/>
+        <!-- BeiDou: original lt(53,-119)/rb(61,-84) is an ~8px-wide trigger spot on the upper
+             ledge, nearly impossible to hit when dropping the Piece of Cracked Dimension. Widened
+             to a generous zone (abs x[-350..50] y[-555..-370] given reactor pos (-181,-439)) so the
+             drop triggers anywhere on the cracked-dimension ledge OR the main floor near the
+             crystal - mirroring how Zakum's altar reactor (2111001) uses a 384px-wide zone. -->
+        <vector name="lt" x="-169" y="-116"/>
+        <vector name="rb" x="231" y="69"/>
       </imgdir>
     </imgdir>
     <imgdir name="hit">
