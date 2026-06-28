@@ -61,6 +61,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -454,7 +455,13 @@ public final class Channel {
     }
 
     private static String[] getEvents() {
-        // 优先取语言文件夹，没有则取scripts
+        // 合并基础事件目录与语言事件目录，避免不完整的语言目录覆盖整个基础目录
+        // Merge the base scripts/event folder with scripts-<lang>/event. The previous code used
+        // ONLY the language folder when it existed, so a partial scripts-<lang>/event (e.g. just a
+        // couple of translated PQs) silently shadowed the entire base event set and broke every
+        // other event (Zakum, all PQs, area bosses...) with a null EventScriptManager.fallback.
+        // Per-file language precedence is still handled by AbstractScriptManager#getInvocableScriptEngine
+        // when each event script is loaded, so language overrides keep working.
         String scriptName = "scripts";
         String eventPath = "event";
         ServiceProperty serviceProperty = ServerManager.getApplicationContext().getBean(ServiceProperty.class);
@@ -462,19 +469,25 @@ public final class Channel {
 
         Path scriptPath = Path.of(scriptName, eventPath);
         Path scriptLangPath = Path.of(scriptLangName, eventPath);
-        Path actualPath = Files.exists(scriptLangPath) ? scriptLangPath : scriptPath;
 
-        List<String> events = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(actualPath)) {
+        Set<String> events = new LinkedHashSet<>();
+        collectEventNames(scriptPath, events);
+        collectEventNames(scriptLangPath, events);
+        return events.toArray(new String[0]);
+    }
+
+    private static void collectEventNames(Path dir, Set<String> events) {
+        if (!Files.exists(dir)) {
+            return;
+        }
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*.js")) {
             for (Path path : stream) {
                 String fileName = path.getFileName().toString();
                 events.add(fileName.substring(0, fileName.length() - 3));
             }
         } catch (IOException e) {
-            log.warn("Unable to load events !");
-            e.printStackTrace();
+            log.warn("Unable to load events from {} !", dir);
         }
-        return events.toArray(new String[0]);
     }
 
     public int getStoredVar(int key) {
